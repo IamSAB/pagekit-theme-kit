@@ -1,0 +1,16 @@
+{
+    "name": "sab-theme-kit",
+    "type": "pagekit-extension",
+    "version": "0.1.0",
+    "title": "SAB Theme Kit",
+    "description": "Theme Kit for faster developping based on UIkit v3.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "SAB"
+        }
+    ],
+    "archive": {
+        "exclude": ["!/app", "!/css","!/js"]
+    }
+}

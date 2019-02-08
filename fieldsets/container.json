@@ -1,0 +1,18 @@
+{
+    "label": "Container",
+    "fields": {
+        "size": {
+            "label": "Size",
+            "help": "Apply a different max-width",
+            "type": "select",
+            "default": "",
+            "options": {
+                "X small": "uk-container-xsmall",
+                "Small": "uk-container-small",
+                "Default": "",
+                "Large": "uk-container-large",
+                "Expand": "uk-container-expand"
+            }
+        }
+    }
+}

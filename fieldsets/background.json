@@ -1,0 +1,85 @@
+{
+    "label": "Background",
+    "fields": {
+        "size": {
+            "label": "Size",
+            "help": "Specify the size of background images by keeping its intrinsic ratio.",
+            "type": "select",
+            "default": "uk-background-default",
+            "options": {
+                "Default": "",
+                "Contain": "uk-background-contain",
+                "Cover": "uk-background-cover"
+            }
+        },
+        "position": {
+            "label": "Position",
+            "help": "Alter the background position of your image.",
+            "type": "select",
+            "default": "",
+            "options": {
+                "Default": "",
+                "Top left": "uk-background-top-left",
+                "Top Center": "uk-background-top-center",
+                "Top right": "uk-background-top-right",
+                "Center left": "uk-background-center-left",
+                "Center": "uk-background-center-center",
+                "Center right": "uk-background-center-right",
+                "Bottom left": "uk-background-bottom-left",
+                "Bottom center": "uk-background-bottom-center",
+                "Bottom right": "uk-background-bottom-right"
+            }
+        },
+        "no-repeat": {
+            "label": "No repeat",
+            "help": "Keep smaller images from repeating to fill the background area.",
+            "default": "",
+            "type": "choose",
+            "true": "uk-background-repeat"
+        },
+        "attachment": {
+            "label": "Fixed background",
+            "help": "Force image to remain in its position while scrolling the site",
+            "default": "",
+            "type": "choose",
+            "true": "uk-background-fixed"
+        },
+        "responsive": {
+            "label": "Responsive",
+            "help": "Limit the display of background images to certain viewport sizes.",
+            "default": "",
+            "type": "select",
+            "options": {
+                "Disabled": "",
+                "640px +": "uk-background-image@s",
+                "960px +": "uk-background-image@m",
+                "1200px +": "uk-background-image@l",
+                "1600px +": "uk-background-image@xl"
+            }
+        },
+        "blend-mode": {
+            "label": "Blend mode",
+            "help": "Apply different blend modes to your background image.",
+            "type": "select",
+            "default": "",
+            "options": {
+                "None": "",
+                "Multiply": "uk-background-blend-multiply",
+                "Screen": "uk-background-blend-screen",
+                "Overlay": "uk-background-blend-overlay",
+                "Darken": "uk-background-blend-darken",
+                "Lighten": "uk-background-blend-lighten",
+                "Dodge": "uk-background-blend-color-dodge",
+                "Burn": "uk-background-blend-color-burn",
+                "Light": "uk-background-blend-hard-light",
+                "Soft light": "uk-background-blend-soft-light",
+                "Difference": "uk-background-blend-difference",
+                "Exclusion": "uk-background-blend-exclusion",
+                "Hue": "uk-background-blend-hue",
+                "Saturation": "uk-background-blend-saturation",
+                "Color": "uk-background-blend-color",
+                "Luminosity": "uk-background-blend-luminosity"
+            }
+        }
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "label": "Navigation",
+    "fields": {
+        "icon": {
+            "label": "Icon",
+            "default": "",
+            "type": "text"
+        },
+        "subtitle": {
+            "label": "Subtitle",
+            "help": "Only for navbar",
+            "default": "",
+            "type": "text"
+        },
+        "header": {
+            "label": "Header",
+            "default": "",
+            "help": "Only for nav",
+            "type": "text"
+        },
+        "divider": {
+            "label": "Divider",
+            "help": "Only for nav",
+            "default": "false",
+            "type": "checkbox"
+        }
+    }
+}

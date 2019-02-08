@@ -1,0 +1,33 @@
+{
+    "label": "Visibility",
+    "fields": {
+        "hidden": {
+            "label": "Hidden",
+            "help": "Hide the element from screens larger than a specified width",
+            "type": "select",
+            "default": "",
+            "options": {
+                "Never": "",
+                "Small": "uk-hidden@s",
+                "Medium": "uk-hidden@m",
+                "Large": "uk-hidden@l",
+                "X large": "uk-hidden@xl",
+                "Touch": "uk-hidden-touch",
+                "No touch": "uk-hidden-notouch"
+            }
+        },
+        "visible": {
+            "label": "Visible",
+            "help": "Show the element for screens larger than the specified width",
+            "type": "select",
+            "default": "",
+            "options": {
+                "Always": "",
+                "Small": "uk-visible@s",
+                "Medium": "uk-visible@m",
+                "Large": "uk-visible@l",
+                "X large": "uk-visible@xl"
+            }
+        }
+    }
+}

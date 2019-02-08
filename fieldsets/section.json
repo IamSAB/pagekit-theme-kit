@@ -1,0 +1,38 @@
+{
+    "label": "Section",
+    "fields": {
+        "style": {
+            "label": "Style",
+            "help": "Apply different background colors",
+            "type": "select",
+            "default": "uk-section-default",
+            "options": {
+                "Default": "uk-section-default",
+                "Muted": "uk-section-muted",
+                "Primary": "uk-section-primary",
+                "Secondary": "uk-section-secondary"
+            }
+        },
+        "preserve": {
+            "label": "Preserve color",
+            "help": "Prevent primary and secondary style to trigger the inverse styles for content. Usefule if section contains cards.",
+            "type": "choose",
+            "default": "uk-preserve-color",
+            "true": "uk-preserve-color"
+        },
+        "size": {
+            "label": "Size",
+            "help": "Adapt vertical padding or remove it altogether.",
+            "type": "select",
+            "default": "",
+            "options": {
+                "X Small": "uk-section-xsmall",
+                "Small": "uk-section-small",
+                "Default": "",
+                "Large": "uk-section-large",
+                "X Large": "uk-section-xlarge",
+                "Remove": "uk-padding-remove-vertical"
+            }
+        }
+    }
+}

@@ -1,0 +1,60 @@
+{
+    "label": "Card",
+    "fields": {
+        "title": {
+            "label": "Show title",
+            "help": "Title is shown in card body.",
+            "default": "true",
+            "type": "checkbox"
+        },
+        "style": {
+            "label": "Style",
+            "help": "Add a specific style to cards",
+            "default": "uk-card-default",
+            "type": "select",
+            "options": {
+                "Default": "uk-card-default",
+                "Primary": "uk-card-primary",
+                "Secondary": "uk-card-secondary"
+            }
+        },
+        "hover": {
+            "label": "Hover modifier",
+            "help": "Create a hover effect on the card.",
+            "type": "choose",
+            "true": "uk-card-hover"
+        },
+        "size": {
+            "label": "Size",
+            "help": "Decrease or increase cards padding.",
+            "default": "",
+            "type": "select",
+            "options": {
+                "Small": "uk-card-small",
+                "Default": "",
+                "Large": "uk-card-large"
+            }
+        },
+        "header": {
+            "label": "Header",
+            "help": "",
+            "default": "",
+            "type": "editor",
+            "editor": {
+                "type": "html",
+                "options": { "height": "250"}
+            }
+        },
+        "footer": {
+            "label": "Footer",
+            "help": "",
+            "default": "",
+            "type": "editor",
+            "editor": {
+                "type": "html",
+                "options": { "height": "250"}
+            }
+
+        }
+    }
+}

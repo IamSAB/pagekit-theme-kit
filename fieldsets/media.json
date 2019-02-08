@@ -1,0 +1,10 @@
+{
+    "label": "Media",
+    "fields": {
+        "src": {
+            "label": "Background",
+            "type": "image",
+            "default": ""
+        }
+    }
+}

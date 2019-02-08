@@ -1,0 +1,39 @@
+{
+    "label": "Heading",
+    "fields": {
+        "style": {
+            "label": "Style",
+            "help": "Apply diffrent heading styles",
+            "type": "select",
+            "default": "",
+            "options": {
+                "Default": "",
+                "Primary": "uk-heading-primary",
+                "Hero": "uk-heading-hero",
+                "Divider": "uk-heading-divider",
+                "Bullet": "uk-heading-bullet",
+                "Line": "uk-heading-line"
+            }
+        },
+        "tag": {
+            "label": "Tag",
+            "help": "Set HTML tag of heading.",
+            "type": "select",
+            "default": "h3",
+            "options": {
+                "Heading 1": "h1",
+                "Heading 2": "h2",
+                "Heading 3": "h3",
+                "Heading 4": "h4",
+                "Heading 5": "h5",
+                "Heading 6": "h6"
+            }
+        },
+        "link": {
+            "label": "Create link",
+            "help": "Apply a id link. The link is the slugified title.",
+            "type": "checkbox",
+            "default": "false"
+        }
+    }
+}
