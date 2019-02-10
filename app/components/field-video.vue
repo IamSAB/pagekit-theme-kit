@@ -3,9 +3,9 @@
     <div>
 
         <div class="uk-form-width-large">
-            <img v-if="value" :src="value.indexOf('blob:') !== 0  ? $url(value) : value">
+            <video v-if="valid" :src="$url(value)"></video>
             <div v-else class="uk-placeholder uk-text-center uk-display-block uk-margin-remove">
-                <img width="60" height="60" :alt="'Placeholder Image' | trans" :src="$url('app/system/assets/images/placeholder-icon.svg')">
+                <img width="60" height="60" :alt="'Placeholder Image' | trans" :src="$url('app/system/assets/images/placeholder-video.svg')">
                 <p class="uk-text-muted uk-margin-small-top">{{ 'Select or enter a source' | trans }}</p>
             </div>
         </div>
@@ -48,11 +48,11 @@
 
             selected () {
                 var selected = this.$refs.finder.getSelected();
-                return selected.length === 1 && this.$refs.finder.isImage(selected[0])
+                return selected.length === 1 && this.$refs.finder.isVideo(selected[0])
             },
 
             valid () {
-                return this.value.match(new RegExp(/\.(?:gif|jpe?g|png|svg|ico)$/));
+                return this.value.match(new RegExp(/\.(mpeg|ogv|mp4|webm|wmv)$/));
             }
 
         },

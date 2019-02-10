@@ -16,7 +16,7 @@
                 <li class="uk-disabled">
                     <a>Categories</a>
                 </li>
-                <li v-for="item in categoryNav" :class="isActive('categories', item) ? 'uk-active' : ''">
+                <li v-for="item in categoryNav" :class="isActive('categories', item) ? 'uk-active' : ''" :key="item">
                     <a @click="toggle('categories', item)">{{ item }}</a>
                 </li>
             </nav>
@@ -25,7 +25,7 @@
                 <li class="uk-disabled">
                     <a>Selected</a>
                 </li>
-                <li v-for="item in selectNav" :class="isActive('selected', item.name) ? 'uk-active' : ''">
+                <li v-for="item in selectNav" :class="isActive('selected', item.name) ? 'uk-active' : ''" :key="item.name">
                     <a @click="toggle('selected', item.name)">{{ item.label }}</a>
                 </li>
             </nav>
@@ -103,22 +103,18 @@
                 _.each(forms, (form, _form) => {
                     // add form if include property not set or include if form matches the allowed include
                     // allows including forms dependend on node or widget type
-                    if (!_.has(form, include[0]) || (_.has(form, include[0]) && _.includes(form[include[0]], include[1]))) {
+                    if (include(form)) {
                         fieldsets = form.fieldsets;
                         form.fieldsets = [];
                         _.each(fieldsets, (fieldset, _fieldset) => {
-                            console.log(_fieldset);
-                            console.log(fieldset);
-                            // set inherit key if required
-                            path = 'values.'+_form+'.'+_fieldset+'.inherit';
-                            if (this.inherit && !_.has(this, path)) {
-                                this.$set(path, true);
+                            if (this.inherit) {
+                                if (!_.has(this.values, form)) this.values[form] = {};
+                                if (!_.has(this.values[form], fieldset)) this.values[form][fieldset] = {};
+                                if (!_.has(this.values[form][fieldset].inherit)) this.values[form][fieldset].inherit = true;
                             }
-
                             fieldset.fields = _.mapKeys(fieldset.fields, (field, _field) => {
                                 return _form+'.'+_fieldset+'.'+_field;
                             });
-
                             fieldset.name = _fieldset;
                             form.fieldsets.push(fieldset);
                         });
@@ -126,10 +122,6 @@
                         this.forms.push(form);
                     }
                 });
-            },
-
-            isInherit (_form, _fieldset) {
-                return this.inherit && !_.has(this, 'values.'+_form+'.'+_fieldset+'.inherit');
             }
 
         },
@@ -192,13 +184,11 @@
         },
 
         components: {
-
             fields: require('./fields.vue')
-
         },
 
         partials: {
-            toolbar: '<!-- Toolbar for Saving (required in site settings) -->'
+            toolbar: '<!-- Toolbar -->'
         }
     }
 
