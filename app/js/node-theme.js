@@ -14,7 +14,10 @@ const Theme = {
 
     created () {
         if (!_.isEmpty(this.node.theme)) this.values = this.node.theme;
-        this.build(window.$config, ['type', [this.node.type]], true);
+        this.build(window.$config, (form) => {
+            if (_.has(form, 'types')) return _.includes(form.types, this.node.type);
+            else return true;
+        });
     },
 
     extends: Forms,
