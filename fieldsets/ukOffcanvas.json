@@ -1,0 +1,23 @@
+{
+    "label": "Offcanvas",
+    "fields": {
+        "mode": {
+            "label": "Mode",
+            "help": "Animation mode",
+            "type": "select",
+            "default": "slide",
+            "options": {
+                "Slide": "slide",
+                "Reveal": "reveal",
+                "Push": "push",
+                "None": "none"
+            }
+        },
+        "flip": {
+            "label": "Flip",
+            "help": "Flip off-canvas to the right side.",
+            "type": "checkbox",
+            "default": false
+        }
+    }
+}

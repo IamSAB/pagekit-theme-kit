@@ -1,8 +1,8 @@
-<div <?= $view->values(["$form.card" => ['style', 'size']], 'uk-card') ?>>
+<div <?= $view->values()->class("$form.card:style,hover,size", 'uk-card') ?>>
 
     <?php if ($view->values()->has("$form.card.header")): ?>
         <div class="uk-card-header">
-            <?= $view->values()->get("$form.card.header") ?>
+            <?= $view->values("$form.card.header") ?>
         </div>
     <?php endif ?>
 

@@ -40,7 +40,7 @@
         "match": {
             "label": "Match item",
             "help": "Match the height of the direct child of just one cell.",
-            "default": "false",
+            "default": false,
             "type": "choose",
             "true": "uk-grid-item-match"
         }

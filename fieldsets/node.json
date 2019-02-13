@@ -1,5 +1,5 @@
 {
-    "label": "Navigation",
+    "label": "Node",
     "fields": {
         "icon": {
             "label": "Icon",
@@ -8,20 +8,20 @@
         },
         "subtitle": {
             "label": "Subtitle",
-            "help": "Only for navbar",
+            "help": "Only shown in navbar",
             "default": "",
             "type": "text"
         },
         "header": {
             "label": "Header",
             "default": "",
-            "help": "Only for nav",
+            "help": "Only shown in nav",
             "type": "text"
         },
         "divider": {
             "label": "Divider",
-            "help": "Only for nav",
-            "default": "false",
+            "help": "Only shown in nav",
+            "default": false,
             "type": "checkbox"
         }
     }

@@ -33,6 +33,11 @@
                 "X Large": "uk-section-xlarge",
                 "Remove": "uk-padding-remove-vertical"
             }
+        },
+        "image": {
+            "label": "Image",
+            "type": "image",
+            "default": ""
         }
     }
 }

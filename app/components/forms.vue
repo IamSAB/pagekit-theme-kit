@@ -17,7 +17,7 @@
                     <a>Categories</a>
                 </li>
                 <li v-for="item in categoryNav" :class="isActive('categories', item) ? 'uk-active' : ''" :key="item">
-                    <a @click="toggle('categories', item)">{{ item }}</a>
+                    <a @click="click('categories', item)">{{ item }}</a>
                 </li>
             </nav>
 
@@ -26,7 +26,7 @@
                     <a>Selected</a>
                 </li>
                 <li v-for="item in selectNav" :class="isActive('selected', item.name) ? 'uk-active' : ''" :key="item.name">
-                    <a @click="toggle('selected', item.name)">{{ item.label }}</a>
+                    <a @click="click('selected', item.name)">{{ item.label }}</a>
                 </li>
             </nav>
 
@@ -37,13 +37,13 @@
                     <fieldset v-for="fieldset in form.fieldsets" :key="fieldset.name" style="margin: 15px 0;">
                         <legend>
                             {{ fieldset.label }}
-                            <label v-if="inherit">
-                                 | <input type="checkbox" v-model="values[form.name][fieldset.name].inherit">
-                                <small>Inherit</small>
+                            <label v-if="doInherit(fieldset)">
+                                 | <input type="checkbox" v-model="values[form.name][fieldset.name].inherit.enabled">
+                                <small>Inherit from Settings > {{ fieldset.inherit.label }}</small>
                             </label>
                         </legend>
                         <p v-if="fieldset.help">{{ fieldset.help }}</p>
-                        <fields v-if="!inherit || !values[form.name][fieldset.name].inherit" :config="fieldset.fields" :values="values"></fields>
+                        <fields v-if="!isInherited(form.name, fieldset.name)" :config="fieldset.fields" :values="values[form.name][fieldset.name]"></fields>
                     </fieldset>
                 </form>
             </div>
@@ -69,24 +69,52 @@
         props: ['form', 'roles'],
 
         data: () => ({
+            test: '',
             values: {},
-            forms: [],
             categories: [],
             selected: [],
             search: '',
-            inherit: true
+            clicks: 0
         }),
 
-        ready () {
-            this.$watch('values', (values, old) => {
-                this.$dispatch('change', values);
-            },{deep:true});
+        watch: {
+            values: {
+                handler (values, old) {
+                    this.$dispatch('change', values);
+                },
+                deep: true
+            },
+            categories (arr, old) {
+                this.$session.set(this.$options.name + '.categories', arr);
+            },
+            selected (arr, old) {
+                this.$session.set(this.$options.name + '.selected', arr);
+            }
+        },
+
+        compiled () {
+            this.categories = this.$session.get(this.$options.name + '.categories', []);
+            this.selected = this.$session.get(this.$options.name + '.selected', []);
         },
 
         methods: {
 
             isActive (prop, value) {
                 return _.includes(this[prop], value);
+            },
+
+            // TODO enhance double click behaviour
+            click (prop, value) {
+                this.clicks++;
+                if (this.clicks == 1) {
+                    this.toggle(prop,value);
+                    setTimeout(() => {
+                        if (this.clicks == 1) {
+                            this[prop] = [value];
+                        }
+                        this.clicks = 0;
+                    }, 250);
+                }
             },
 
             toggle (prop, value) {
@@ -98,35 +126,51 @@
                 }
             },
 
-            build (forms, include) {
-                let fieldsets, path;
+            setValues (values) {
+                if (!_.isEmpty(values)) this.values = values;
+            },
+
+            build (forms) {
+                let result = [], fieldsets, path;
                 _.each(forms, (form, _form) => {
                     // add form if include property not set or include if form matches the allowed include
                     // allows including forms dependend on node or widget type
-                    if (include(form)) {
-                        fieldsets = form.fieldsets;
-                        form.fieldsets = [];
-                        _.each(fieldsets, (fieldset, _fieldset) => {
-                            if (this.inherit) {
-                                if (!_.has(this.values, form)) this.values[form] = {};
-                                if (!_.has(this.values[form], fieldset)) this.values[form][fieldset] = {};
-                                if (!_.has(this.values[form][fieldset].inherit)) this.values[form][fieldset].inherit = true;
-                            }
-                            fieldset.fields = _.mapKeys(fieldset.fields, (field, _field) => {
-                                return _form+'.'+_fieldset+'.'+_field;
-                            });
-                            fieldset.name = _fieldset;
-                            form.fieldsets.push(fieldset);
-                        });
-                        form.name = _form;
-                        this.forms.push(form);
-                    }
+                    fieldsets = form.fieldsets;
+                    form.fieldsets = [];
+                    _.each(fieldsets, (fieldset, _fieldset) => {
+                        path = _form+'.'+_fieldset;
+                        if (_.has(fieldset, 'inherit') && !_.has(this.values, path+'.inherit')) {
+                            this.$set('values.'+path, {inherit: {
+                                enabled: true,
+                                path: fieldset.inherit.path
+                            }});
+                            // TODO remove inherit key of something in settings change?
+                        }
+                        if (!_.has(this.values, path)) this.$set('values.'+path, {});
+                        fieldset.name = _fieldset;
+                        form.fieldsets.push(fieldset);
+                    });
+                    form.name = _form;
+                    result.push(form);
                 });
+                return result;
+            },
+
+            doInherit(fieldset) {
+                return _.has(fieldset, 'inherit');
+            },
+
+            isInherited(form, fieldset) {
+                return this.$get('values.'+form+'.'+fieldset+'.inherit.enabled', false);
             }
 
         },
 
         computed: {
+
+            forms () {
+                return [];
+            },
 
             categoryNav () {
                 let categories = [];

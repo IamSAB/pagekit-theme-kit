@@ -1,0 +1,34 @@
+{
+    "label": "Position",
+    "fields": {
+        "size": {
+            "label": "Size",
+            "type": "select",
+            "default": "",
+            "options": {
+                "Small": "uk-position-small",
+                "Default": "",
+                "Medium": "uk-position-medium",
+                "Large": "uk-position-large"
+            }
+        },
+        "position": {
+            "label": "Position",
+            "help": "",
+            "type": "select",
+            "default": "",
+            "options": {
+                "Default": "",
+                "Top left": "uk-position-top-left",
+                "Top Center": "uk-position-top-center",
+                "Top right": "uk-position-top-right",
+                "Center left": "uk-position-center-left",
+                "Center": "uk-position-center",
+                "Center right": "uk-position-center-right",
+                "Bottom left": "uk-position-bottom-left",
+                "Bottom center": "uk-position-bottom-center",
+                "Bottom right": "uk-position-bottom-right"
+            }
+        }
+    }
+}

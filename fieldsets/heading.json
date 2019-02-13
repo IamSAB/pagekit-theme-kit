@@ -1,6 +1,12 @@
 {
     "label": "Heading",
     "fields": {
+        "show": {
+            "label": "Show heading",
+            "help": "Show or hide heading.",
+            "default": true,
+            "type": "checkbox"
+        },
         "style": {
             "label": "Style",
             "help": "Apply diffrent heading styles",
@@ -33,7 +39,7 @@
             "label": "Create link",
             "help": "Apply a id link. The link is the slugified title.",
             "type": "checkbox",
-            "default": "false"
+            "default": false
         }
     }
 }

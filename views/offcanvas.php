@@ -1,4 +1,4 @@
-<div id="offcanvas" uk-offcanvas>
+<div id="offcanvas" <?= $view->values()->attr('menu.offcanvas', '', true) ?>>
     <div class="uk-offcanvas-bar">
         <button class="uk-offcanvas-close" type="button" uk-close></button>
         <?= $content ?>

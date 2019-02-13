@@ -1,0 +1,38 @@
+{
+    "label": "Cover",
+    "fields": {
+        "type": {
+            "label": "Media",
+            "type": "select",
+            "default": "image",
+            "options": {
+                "Image": "image",
+                "Video": "video",
+                "iFrame": "iframe"
+            }
+        },
+        "ration": {
+            "label": "Ratio",
+            "type": "text",
+            "default": "16:9"
+        },
+        "image": {
+            "label": "Src",
+            "type": "image",
+            "default": "",
+            "show": "type == 'image'"
+        },
+        "video": {
+            "label": "Src",
+            "type": "video",
+            "default": "",
+            "show": "type == 'video'"
+        },
+        "iframe": {
+            "label": "Src",
+            "type": "iframe",
+            "default": "",
+            "show": "type == 'iframe'"
+        }
+    }
+}

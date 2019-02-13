@@ -35,7 +35,7 @@
             "help": "Keep smaller images from repeating to fill the background area.",
             "default": "",
             "type": "choose",
-            "true": "uk-background-repeat"
+            "true": "uk-background-norepeat"
         },
         "attachment": {
             "label": "Fixed background",

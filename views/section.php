@@ -1,5 +1,8 @@
-<div <?= $view->values([$form => ['section', 'background']], 'uk-section') ?> <?= $view->values()->img("$form.image.src") ?>>
-    <div <?= $view->values("$form.container",'uk-container') ?>>
+<div
+    <?= $view->values()->class(["$form.section:style,size,preserve", "$form.background"], 'uk-section') ?>
+    <?= $view->values()->image("$form.section.image") ?>
+    >
+    <div <?= $view->values()->class("$form.container",'uk-container') ?>>
         <?= $content ?>
     </div>
 </div>

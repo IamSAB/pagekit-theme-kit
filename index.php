@@ -12,9 +12,4 @@ return [
     ],
 
     'main' => 'SAB\\ThemeKit\\ThemeKit',
-
-    'config' => [
-        'defaults' => [],
-        'theme' => []
-    ]
 ];

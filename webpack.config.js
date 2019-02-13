@@ -4,7 +4,6 @@ module.exports = [
         entry: {
             "node-theme": "./app/js/node-theme.js",
             "widget-theme": "./app/js/widget-theme.js",
-            "settings-theme": "./app/js/settings-theme.js",
             "settings-theme-kit": "./app/js/settings-theme-kit.js",
         },
 

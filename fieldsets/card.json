@@ -1,12 +1,6 @@
 {
     "label": "Card",
     "fields": {
-        "title": {
-            "label": "Show title",
-            "help": "Title is shown in card body.",
-            "default": "true",
-            "type": "checkbox"
-        },
         "style": {
             "label": "Style",
             "help": "Add a specific style to cards",

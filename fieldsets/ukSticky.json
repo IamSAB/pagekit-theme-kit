@@ -1,0 +1,32 @@
+{
+    "label": "UIkit Sticky",
+    "fields": {
+        "offset": {
+            "label": "Offset",
+            "help": "Position the element below the viewport edge",
+            "type": "number",
+            "default": "0",
+            "attrs": {
+                "min": "0",
+                "step": "10"
+            }
+        },
+        "top": {
+            "label": "Offset",
+            "help": "Apply the sticky behavior with a delay e.g. in pixels or viewport height",
+            "type": "text",
+            "default": "100"
+        },
+        "animation": {
+            "label": "Animation",
+            "type": "text",
+            "default": "uk-animation-slie-top"
+        },
+        "showOnUp": {
+            "label": "Show on up",
+            "help": "Make the sticky element show only when scrolling up to.",
+            "default": false,
+            "type": "checkbox"
+        }
+    }
+}

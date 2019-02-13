@@ -9,9 +9,8 @@ const Theme = {
     },
 
     created () {
-        this.inherit = false;
-        if (!_.isEmpty(window.$themeKit.defaults)) this.values = window.$themeKit.defaults;
-        this.build(window.$configThemeKit, [], false);
+        if (!_.isEmpty(window.$themeKit)) this.values = window.$themeKit;
+        this.build(window.$config, () => true);
     },
 
     extends: Forms,
@@ -21,7 +20,7 @@ const Theme = {
         save () {
             this.$http.post('admin/system/settings/config', {
                 name: 'theme-kit',
-                config: {defaults: this.values}
+                config: this.values
             }).catch((res) => {
                 this.$notify(res.data, 'danger');
             });

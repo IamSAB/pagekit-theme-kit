@@ -2,123 +2,189 @@
 
 namespace SAB\ThemeKit;
 
-use Pagekit\View\Helper\Helper;
-use Pagekit\Util\ArrObject;
 use Pagekit\View\View;
+use Pagekit\View\Helper\Helper;
+use Pagekit\Util\Arr;
+use Pagekit\Util\ArrObject;
 use Pagekit\Application as App;
 
 
 class ValuesHelper extends Helper
 {
-    private $values = null;
+    private $values;
+    private $defaults;
+    private $params;
+
+    function __construct(ThemeKit $kit)
+    {
+        $this->defaults = new ArrObject($kit->config());
+    }
 
     public function register(View $view)
     {
         $this->view = $view;
-        $this->values = $view->params;
+        $this->params = $this->doInherit($view->app->node()->theme);
+        $this->useParams();
     }
 
-    /**
-     * Get values rendered as attribute
-     *
-     * @param   string|array    $paths Define paths to get the values:
-     *
-     *                          'main' for all form values
-     *                          'main' => ['section', 'container'] for specific fieldset values
-     *                          'main.section' for all fieldset values
-     *                          'main.section.style' for field value
-     *                          'main.section' => ['style', 'size'] for specific fieldset values
-     *
-     * @param   string          $value Default value to which values are appended
-     * @param   string          $attr Attribute to render
-     * @return  string
-     */
-    function __invoke($paths, $value = '', $attr = 'class'): string
+    public function doInherit(array $values): ArrObject
     {
-        if (!is_array($paths)) {
-            $paths = [$paths];
-        }
-
-        foreach ($paths as $key => $val) {
-
-            if (is_numeric($key)) {
-                $data = (array) $this->values->get($val, []);
-                $path = $val;
-            }
-            else {
-                $data = array_intersect_key((array) $this->values->get($key, []), array_flip($val));
-                $path = $key;
-            }
-
-            $path = explode('.', $path);
-            $array_key = end($path);
-
-            $data = $this->flattenRetrieve($array_key, $data);
-
-            if ($attr == 'class') {
-                $value .= ' '.implode(' ', array_values($data));
-            }
-            else {
-                foreach ($data as $key => $val) {
-                    $value .= "$key: $val; ";
+        foreach ($values as $f => $form) {
+            foreach ($form as $fs => $fieldset) {
+                if (isset($fieldset['inherit'])) {
+                    if ($fieldset['inherit']['enabled']) {
+                        $values[$f][$fs] = $this->defaults->get($fieldset['inherit']['path'], []);
+                    }
+                    else unset($values[$f][$fs]['inherit']);
                 }
             }
         }
-
-        return $value ? "$attr=\"$value\"" : "";
+        return new ArrObject($values);
     }
 
-    public function img(string $path)
+    public function use(array $values)
     {
-        if ($src = $this->values->get($path, false)) {
-            return "data-src=\"{$this->view->url($src)}\" uk-img";
-        }
+        App::log()->debug(json_encode($values));
+        $this->values = $this->doInherit($values);
     }
 
-    private function flattenRetrieve(string $array_key, array $array, array $result = [])
+    public function useParams()
     {
-        if (isset($array['inherit'])) {
-            // use defaults if inherit enabled
-            if ($array['inherit']) {
-                return $this->flattenRetrieve($array_key, $this->view->params->get("defaults.$array_key", []));
-            }
-            // not needed value
-            else {
-                unset($array['inherit']);
-            }
-        }
-
-        // flatten to associative array
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $result = array_merge($result, $this->flattenRetrieve($key, $value, $result));
-            }
-            else {
-                $result[$key] = $value;
-            }
-        }
-
-        return $result;
+        $this->values = $this->params;
     }
 
-    public function has($path)
+    public function has(string $path)
     {
         return $this->values->has($path);
     }
 
-    public function get($path, $default = '')
+    public function get(string $path, $default = '')
     {
         return $this->values->get($path, $default);
     }
 
-    public function use($values)
+    function __invoke(string $path, string $default = '')
     {
-        $this->values = $values instanceOf ArrObject ? $values : new ArrObject($values);
+        return $this->get($path, $default);
     }
 
-    public function reset()
+    public function class($sources, string $class = '', bool $or = false)
     {
-        $this->values = $this->view->params;
+        if (!is_array($sources)) $sources = [$sources];
+
+        $paths = [];
+
+        foreach ($sources as $source) {
+            $parts = explode(':', $source);
+            if (isset($parts[1])) {
+                foreach (explode(',', $parts[1]) as $key) {
+                    $paths[] = $parts[0].'.'.$key;
+                }
+            }
+            else {
+                $paths[] = $parts[0];
+            }
+        }
+
+        $classes = [];
+
+        foreach ($paths as $path) {
+            $res = $this->values->get($path, []);
+            switch (count(explode('.', $path))) {
+                case 1: $classes += array_values(Arr::flatten($res)); break;
+                case 2: $classes += array_values($res); break;
+                case 3: $classes += is_array($res) ? $res : [$res]; break;
+                default: break;
+            }
+        }
+
+        $classes = implode(' ', $classes);
+        $classes = !$classes && $or ? $class : $class.( $classes ? ' ' : '').$classes;
+
+        return $classes ? "class=\"$classes\"" : '';
+    }
+
+    // public function class($paths, string $class = '', bool $orValue = false)
+    // {
+    //     if (!is_array($paths)) $paths = [$paths];
+
+    //     foreach ($paths as $arg1 => $arg2) {
+
+    //         if (is_numeric($arg1)) {
+    //             $res = $this->values->get($arg2, []);
+    //             if (is_array($res)) {
+    //                 $values = array_values(
+    //                     Arr::flatten($res)
+    //                 );
+    //             }
+    //             else {
+    //                 $values = [$res];
+    //             }
+    //         }
+    //         else {
+    //             $res = $this->values->get($arg1, []);
+    //             if (is_array($res)) {
+    //                 $values = array_values(
+    //                     Arr::flatten(
+    //                         array_intersect_key(
+    //                             $res,
+    //                             array_flip($arg2)
+    //                         )
+    //                     )
+    //                 );
+    //             }
+    //             else {
+    //                 $values = [$res];
+    //             }
+    //         }
+
+    //         $class .= ($class ? ' ' : '') . implode(' ', $values);
+    //     }
+
+    //     return $class ? "class=\"$class\"" : '';
+    // }
+
+    public function attr(string $attr, string $path, string $value = '', bool $renderIfNoValue = false)
+    {
+        if (count(explode('.', $path)) != 2) return "INVALID_PATH";
+
+        $arr = $this->values->get($path, []);
+
+        foreach ($arr as $key => $val) {
+            if (is_bool($val)) $val = $val ? 'true' : 'false';
+            $value .= "$key:$val;";
+        }
+
+        return ($value || $renderIfNoValue) ? "$attr=\"$value\"" : '';
+    }
+
+    public function video(string $path)
+    {
+        if (count(explode('.', $path)) != 3) return "INVALID_PATH";
+
+        $src = $this->values->get($path, '');
+        return $src ? "src=\"{$this->view->url($src)}\" uk-video" : '';
+    }
+
+    public function image(string $path)
+    {
+        if (count(explode('.', $path)) != 3) return 'INVALID_PATH';
+
+        $src = $this->values->get($path, '');
+        return $src ? "data-src=\"{$this->view->url($src)}\" uk-img" : '';
+    }
+
+    public function src(string $path)
+    {
+        if (count(explode('.', $path)) != 3) return 'INVALID_PATH';
+
+        $src = $this->values->get($path, '');
+        return $src ? "src=\"{$this->view->url($src)}\"" : '';
+    }
+
+    public function raw($path)
+    {
+        return json_encode($this->values->get($path));
     }
 
     public function getName()

@@ -13,11 +13,19 @@ const Theme = {
     },
 
     created () {
-        if (!_.isEmpty(this.node.theme)) this.values = this.node.theme;
-        this.build(window.$config, (form) => {
-            if (_.has(form, 'types')) return _.includes(form.types, this.node.type);
-            else return true;
-        });
+        this.setValues(this.node.theme);
+        this.built = this.build(window.$config);
+    },
+
+    computed: {
+
+        forms () {
+            return _.filter(this.built, (form) => {
+                if (_.has(form, 'types')) return _.includes(form.types, this.node.type);
+                else return true;
+            });
+        }
+
     },
 
     extends: Forms,
