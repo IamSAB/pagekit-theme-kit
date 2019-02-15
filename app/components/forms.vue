@@ -133,8 +133,6 @@
             build (forms) {
                 let result = [], fieldsets, path;
                 _.each(forms, (form, _form) => {
-                    // add form if include property not set or include if form matches the allowed include
-                    // allows including forms dependend on node or widget type
                     fieldsets = form.fieldsets;
                     form.fieldsets = [];
                     _.each(fieldsets, (fieldset, _fieldset) => {
@@ -144,9 +142,11 @@
                                 enabled: true,
                                 path: fieldset.inherit.path
                             }});
-                            // TODO remove inherit key of something in settings change?
+                            // TODO should it remove inherit key if something in settings change?
                         }
-                        if (!_.has(this.values, path)) this.$set('values.'+path, {});
+                        // Pagekit converts empty objects to empty array on serialization, which breaks vue-form.
+                        // Necessary to re-set fieldset value if it's empty array
+                        if (_.isEmpty(_.get(this.values, path), [])) this.$set('values.'+path, {});
                         fieldset.name = _fieldset;
                         form.fieldsets.push(fieldset);
                     });

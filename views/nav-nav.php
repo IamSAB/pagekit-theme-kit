@@ -1,4 +1,4 @@
-<ul class="uk-nav <?= $classes ?>">
+<ul <?= $view->values()->class("$form.menu.nav", 'uk-nav') ?>>
 
     <?php foreach($root->getChildren() as $node) : ?>
 
@@ -25,7 +25,7 @@
 
         </li>
 
-        <?php if (isset($node->theme['menu']['divider']) && $node['theme']['divider']): ?>
+        <?php if (isset($node->theme['menu']['divider']) && $node->theme['menu']['divider']): ?>
             <li class="uk-nav-divider"></li>
         <?php endif ?>
 

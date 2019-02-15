@@ -17,9 +17,25 @@ class ThemeKit extends Module
 
     public function main(Application $app)
     {
-        $this->fs = $app->file();
-        $this->locator = $app->locator();
-        $this->module = $app->module();
+        $this->app = $app;
+
+        $this->applyOverwrites($app->locator()->get('theme-kit:views/overwrites'));
+    }
+
+    private function applyOverwrites($dir, $root = '')
+    {
+        foreach ($this->app->file()->listDir("$dir/$root") as $name) {
+            $parts = explode('.', $name);
+            $path = ($root ? $root.'/' : $root) . $parts[0];
+            if (isset($parts[1])) {
+                $this->app->on("view.$path", function ($event) use ($path) {
+                    $event->setTemplate("theme-kit/overwrites/$path.php");
+                });
+            }
+            else {
+                $this->applyOverwrites($dir, $path);
+            }
+        }
     }
 
     private function fieldsets()
@@ -27,8 +43,8 @@ class ThemeKit extends Module
         if ($this->fieldsets) return $this->fieldsets;
 
         foreach (['theme-kit:fieldsets/', 'theme:fieldsets/'] as $path) {
-            if ($path = $this->locator->get($path)) {
-                $files = $this->fs->listDir($path);
+            if ($path = $this->app->locator()->get($path)) {
+                $files = $this->app->file()->listDir($path);
                 foreach ($files as $name) {
                     $parts = explode('.', $name);
                     if (count($parts) == 2 && $parts[1] == 'json') {
@@ -112,7 +128,7 @@ class ThemeKit extends Module
     public function subscribe()
     {
         // search for a module which require theme-kit
-        foreach ($this->module as $module) {
+        foreach ($this->app->module() as $module) {
             if ($module->get('require', '') == 'theme-kit') {
                 $this->theme = $module;
                 continue;

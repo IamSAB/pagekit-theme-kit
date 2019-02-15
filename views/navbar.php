@@ -1,6 +1,6 @@
-<div class="uk-navbar-container <?= $view->values('menu.overlay') ? 'uk-position-absolute uk-position-z-index uk-navbar-transparent' : '' ?>">
-    <div <?= $view->values()->class('menu.container', 'uk-container') ?>>
-        <div <?= $view->values()->attr('menu.uk-navbar') ?>>
+<div class="uk-navbar-container uk-navbar-transparent">
+    <div <?= $view->values()->class("$form.container", 'uk-container') ?>>
+        <div <?= $view->values()->attr('uk-navbar', "$form.ukNavbar", true) ?>>
             <?= $content ?>
         </div>
     </div>
