@@ -1,0 +1,15 @@
+{
+    "label": "Inverse",
+    "fields": {
+        "style": {
+            "label": "Style",
+            "type": "select",
+            "default": "",
+            "options": {
+                "Inherit": "",
+                "Light": "uk-light",
+                "Dark": "uk-dark"
+            }
+        }
+    }
+}

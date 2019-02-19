@@ -5,7 +5,7 @@
             "label": "Size",
             "help": "Specify the size of background images by keeping its intrinsic ratio.",
             "type": "select",
-            "default": "uk-background-default",
+            "default": "",
             "options": {
                 "Default": "",
                 "Contain": "uk-background-contain",
@@ -30,7 +30,7 @@
                 "Bottom right": "uk-background-bottom-right"
             }
         },
-        "no-repeat": {
+        "noRepeat": {
             "label": "No repeat",
             "help": "Keep smaller images from repeating to fill the background area.",
             "default": "",
@@ -57,7 +57,7 @@
                 "1600px +": "uk-background-image@xl"
             }
         },
-        "blend-mode": {
+        "blendMode": {
             "label": "Blend mode",
             "help": "Apply different blend modes to your background image.",
             "type": "select",

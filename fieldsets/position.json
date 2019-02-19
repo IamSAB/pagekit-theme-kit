@@ -6,8 +6,8 @@
             "type": "select",
             "default": "",
             "options": {
+                "Collapse": "",
                 "Small": "uk-position-small",
-                "Default": "",
                 "Medium": "uk-position-medium",
                 "Large": "uk-position-large"
             }
@@ -16,9 +16,8 @@
             "label": "Position",
             "help": "",
             "type": "select",
-            "default": "",
+            "default": "uk-position-center",
             "options": {
-                "Default": "",
                 "Top left": "uk-position-top-left",
                 "Top Center": "uk-position-top-center",
                 "Top right": "uk-position-top-right",
@@ -27,7 +26,8 @@
                 "Center right": "uk-position-center-right",
                 "Bottom left": "uk-position-bottom-left",
                 "Bottom center": "uk-position-bottom-center",
-                "Bottom right": "uk-position-bottom-right"
+                "Bottom right": "uk-position-bottom-right",
+                "Cover": "uk-position-cover"
             }
         }
     }

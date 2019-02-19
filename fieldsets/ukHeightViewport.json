@@ -1,6 +1,11 @@
 {
     "label": "UIkit Viewport Height",
     "fields": {
+        "_enable": {
+            "label": "Enable",
+            "type": "checkbox",
+            "default": false
+        },
         "offset-top": {
             "label": "Offset top",
             "help": "Subtracts the element's top offset from its height.",
@@ -11,7 +16,7 @@
             "label": "Offset bottom",
             "help": "Subtracts the height (true) of the sibling that immediately follows the element, the given percentage (Number), Pixel (px) value from element's own height or the given element's height.",
             "type": "text",
-            "default": false
+            "default": "false"
         },
         "expand": {
             "label": "Expand",

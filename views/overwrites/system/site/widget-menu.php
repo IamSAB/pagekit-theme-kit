@@ -1,3 +1,3 @@
-<?= $view->render('theme-kit/nav-nav.php', [
+<?= $view->render('theme-kit/nav/nav.php', [
     'form' => 'menu'
 ]) ?>

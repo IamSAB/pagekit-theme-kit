@@ -1,4 +1,4 @@
-<div class="uk-cover-container" <?= $view->values()->attr('uk-height-viewport', "$form.ukHeightViewport", true) ?>>
+<div class="uk-cover-container" <?= $view->values()->attr('uk-height-viewport', "$form.ukHeightViewport") ?>>
 
     <?php
         $parts = explode(':', $view->values("$form.cover.ration", '16:9'));

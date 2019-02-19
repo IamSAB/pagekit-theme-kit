@@ -1,0 +1,21 @@
+{
+    "label": "Nav",
+    "fields": {
+        "style": {
+            "label": "Style",
+            "type": "select",
+            "default": "",
+            "options": {
+                "None": "",
+                "Default": "uk-nav-default",
+                "Primary": "uk-nav-primary"
+            }
+        },
+        "center": {
+            "label": "Center",
+            "type": "choose",
+            "default": "",
+            "true": "uk-nav-center"
+        }
+    }
+}

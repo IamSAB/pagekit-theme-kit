@@ -13,7 +13,7 @@
 
     <div class="uk-navbar-center-left">
         <div>
-            <?= $view->render('theme-kit/navbar-nav.php', ['root' => $left]) ?>
+            <?= $view->render('theme-kit/nav/navbar.php', ['root' => $left]) ?>
         </div>
     </div>
 
@@ -23,7 +23,7 @@
 
     <div class="uk-navbar-center-right">
         <div>
-            <?= $view->render('theme-kit/navbar-nav.php', ['root' => $right]) ?>
+            <?= $view->render('theme-kit/nav/navbar.php', ['root' => $right]) ?>
         </div>
     </div>
 

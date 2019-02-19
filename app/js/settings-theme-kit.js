@@ -9,11 +9,17 @@ const Theme = {
     },
 
     created () {
-        if (!_.isEmpty(window.$themeKit)) this.values = window.$themeKit;
-        this.build(window.$config, () => true);
+        this.setValues(window.$themeKit);
+        this.built = this.build(window.$config);
     },
 
     extends: Forms,
+
+    computed: {
+        forms () {
+            return this.built;
+        }
+    },
 
     events: {
 

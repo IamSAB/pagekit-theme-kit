@@ -36,7 +36,7 @@
             responsify(field, viewport) {
                 field = JSON.parse(JSON.stringify(field));
                 _.each(field.options, (option, key) => {
-                    if (key != '- Select -') field.options[key] = option+viewport;
+                    if (option) field.options[key] = option+viewport;
                 });
                 field.name = field.name+viewport;
                 _.set(field, 'attrs.class', 'uk-form-small');

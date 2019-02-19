@@ -1,5 +1,5 @@
 <?php if ($view->values("$form.heading.show", true)): ?>
-    <<?= $view->values("$form.heading.tag", 'h3') ?> <?= $view->values()->class("$form.heading.style", $default) ?>>
+    <<?= $view->values("$form.heading.tag", 'h3') ?> <?= $view->values()->class("$form.heading.style", $default, true) ?>>
         <?php if ($view->values("$form.heading.link", false)): ?>
             <a class='uk-link-reset' href="#<?= $app->filter($title, 'slugify') ?>"><?= $title ?></a>
         <?php else: ?>

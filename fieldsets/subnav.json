@@ -1,0 +1,15 @@
+{
+    "label": "Subnav",
+    "fields": {
+        "style": {
+            "label": "Style",
+            "type": "select",
+            "default": "",
+            "options": {
+                "Default": "",
+                "Divider": "uk-subnav-divider",
+                "Pill": "uk-subnav-pill"
+            }
+        }
+    }
+}

@@ -3,37 +3,36 @@
 namespace SAB\ThemeKit;
 
 use Pagekit\Module\Module;
-use Pagekit\Application;
+use Pagekit\Application as App;
 use Pagekit\Util\Arr;
 
 
 class ThemeKit extends Module
 {
-    private $fs;
-    private $locator;
-    private $module;
+    private $app;
     private $fieldsets = null;
     private $theme = null;
 
-    public function main(Application $app)
+    public function main(App $app)
     {
         $this->app = $app;
-
         $this->applyOverwrites($app->locator()->get('theme-kit:views/overwrites'));
     }
 
-    private function applyOverwrites($dir, $root = '')
+    private function applyOverwrites(string $dir, $root = '')
     {
-        foreach ($this->app->file()->listDir("$dir/$root") as $name) {
-            $parts = explode('.', $name);
-            $path = ($root ? $root.'/' : $root) . $parts[0];
-            if (isset($parts[1])) {
-                $this->app->on("view.$path", function ($event) use ($path) {
-                    $event->setTemplate("theme-kit/overwrites/$path.php");
-                });
-            }
-            else {
-                $this->applyOverwrites($dir, $path);
+        if ($dir) {
+            foreach ($this->app->file()->listDir("$dir/$root") as $name) {
+                $parts = explode('.', $name);
+                $path = ($root ? $root.'/' : $root) . $parts[0];
+                if (isset($parts[1])) {
+                    $this->app->on("view.$path", function ($event) use ($path) {
+                        $event->setTemplate("theme-kit/overwrites/$path.php");
+                    });
+                }
+                else {
+                    $this->applyOverwrites($dir, $path);
+                }
             }
         }
     }
@@ -61,9 +60,15 @@ class ThemeKit extends Module
         return $this->fieldsets;
     }
 
-    private function load(string $key, bool $doInherit = true)
+    private function load(string $key, bool $doInherit = true, array $default = [])
     {
         $config = $this->theme->get($key, []);
+
+        if ($default) {
+            foreach ($default as $key => $value) {
+                $config[$key] = $value;
+            }
+        }
 
         // merge fieldsets into config
         foreach ($config as $name => $form) {
@@ -105,7 +110,13 @@ class ThemeKit extends Module
 
     public function onSiteEdit($event, $view)
     {
-        $view->data('$config', $this->load('node-theme'));
+        $config = $this->load('node-theme', true, ['general' => [
+            'label' => 'General',
+            'categories' => ['Site'],
+            'fieldsets' => ['node', 'heading', 'inverse']
+        ]]);
+
+        $view->data('$config', $config);
 
         $view->script('node-theme', 'theme-kit:app/bundle/node-theme.js', 'site-edit');
     }
@@ -135,7 +146,7 @@ class ThemeKit extends Module
             }
         }
 
-        if (!$this->theme) return;
+        if (!$this->theme) return [];
 
         return [
             'view.init' => ['onViewInit', -10],

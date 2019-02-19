@@ -44,7 +44,6 @@ class ValuesHelper extends Helper
 
     public function use(array $values)
     {
-        App::log()->debug(json_encode($values));
         $this->values = $this->doInherit($values);
     }
 
@@ -91,76 +90,53 @@ class ValuesHelper extends Helper
         foreach ($paths as $path) {
             $res = $this->values->get($path, []);
             switch (count(explode('.', $path))) {
-                case 1: $classes += array_values(Arr::flatten($res)); break;
-                case 2: $classes += array_values($res); break;
-                case 3: $classes += is_array($res) ? $res : [$res]; break;
+                // form values
+                case 1: $classes = Arr::merge($classes, array_values(Arr::flatten($res))); break;
+                // fieldset values
+                case 2: $classes = Arr::merge($classes, array_values($res)); break;
+                // field value
+                case 3: $classes = Arr::merge($classes, is_array($res) ? $res : [$res]); break;
+                // non-matching path
                 default: break;
             }
         }
 
         $classes = implode(' ', $classes);
-        $classes = !$classes && $or ? $class : $class.( $classes ? ' ' : '').$classes;
+
+        if ($or) $classes = $classes ? $classes : $class;
+        else $classes = $classes ? $class.' '.$classes : $class;
 
         return $classes ? "class=\"$classes\"" : '';
     }
 
-    // public function class($paths, string $class = '', bool $orValue = false)
-    // {
-    //     if (!is_array($paths)) $paths = [$paths];
-
-    //     foreach ($paths as $arg1 => $arg2) {
-
-    //         if (is_numeric($arg1)) {
-    //             $res = $this->values->get($arg2, []);
-    //             if (is_array($res)) {
-    //                 $values = array_values(
-    //                     Arr::flatten($res)
-    //                 );
-    //             }
-    //             else {
-    //                 $values = [$res];
-    //             }
-    //         }
-    //         else {
-    //             $res = $this->values->get($arg1, []);
-    //             if (is_array($res)) {
-    //                 $values = array_values(
-    //                     Arr::flatten(
-    //                         array_intersect_key(
-    //                             $res,
-    //                             array_flip($arg2)
-    //                         )
-    //                     )
-    //                 );
-    //             }
-    //             else {
-    //                 $values = [$res];
-    //             }
-    //         }
-
-    //         $class .= ($class ? ' ' : '') . implode(' ', $values);
-    //     }
-
-    //     return $class ? "class=\"$class\"" : '';
-    // }
-
-    public function attr(string $attr, string $path, string $value = '', bool $renderIfNoValue = false)
+    public function attr(string $attr, string $path, bool $checkEnable = true, string $value = '')
     {
-        if (count(explode('.', $path)) != 2) return "INVALID_PATH";
+        // TODO allow selecting keys->values for attr
+
+        if (substr_count($path, '.') != 1) return 'invalid-path';
 
         $arr = $this->values->get($path, []);
 
-        foreach ($arr as $key => $val) {
-            if (is_bool($val)) $val = $val ? 'true' : 'false';
-            $value .= "$key:$val;";
+        // attribute should only be rendered, if its enabled (needed as most attributes do something without a value)
+        if ($checkEnable) {
+            if (Arr::has($arr, '_enable')) {
+                if (!Arr::get($arr, '_enable', false)) return '';
+                else unset($arr['_enable']);
+            }
+            else return '';
         }
 
-        return ($value || $renderIfNoValue) ? "$attr=\"$value\"" : '';
+        foreach ($arr as $key => $val) {
+            if (is_bool($val)) $val = $val ? 'true' : 'false';
+            if ($val) $value .= "$key:$val;";
+        }
+
+        return "$attr=\"$value\"";
     }
 
     public function video(string $path)
     {
-        if (count(explode('.', $path)) != 3) return "INVALID_PATH";
+        if (substr_count($path, '.') != 2) return "invalid-path";
 
         $src = $this->values->get($path, '');
         return $src ? "src=\"{$this->view->url($src)}\" uk-video" : '';
@@ -168,7 +144,7 @@ class ValuesHelper extends Helper
 
     public function image(string $path)
     {
-        if (count(explode('.', $path)) != 3) return 'INVALID_PATH';
+        if (substr_count($path, '.') != 2) return 'invalid-path';
 
         $src = $this->values->get($path, '');
         return $src ? "data-src=\"{$this->view->url($src)}\" uk-img" : '';
@@ -176,10 +152,16 @@ class ValuesHelper extends Helper
 
     public function src(string $path)
     {
-        if (count(explode('.', $path)) != 3) return 'INVALID_PATH';
+        if (substr_count($path, '.') != 2) return 'invalid-path';
 
         $src = $this->values->get($path, '');
         return $src ? "src=\"{$this->view->url($src)}\"" : '';
+    }
+
+    public function icon(string $path, $ratio = 1)
+    {
+        $icon = $this->values->get($path);
+        return $icon ? "uk-icon=\"icon:$icon;ratio:$ratio\"" : '';
     }
 
     public function raw($path)

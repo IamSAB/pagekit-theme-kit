@@ -1,5 +1,11 @@
-<article class="uk-article">
-    <h1 class="uk-article-title"><?= $page->title ?></h1>
-    <p class="uk-article-meta">Hey there, I am the overwrite!</p>
+<article <?= $view->values()->class('general.inverse.style', 'uk-article') ?>>
+
+    <?= $view->render('theme-kit/heading.php', [
+        'form' => 'general',
+        'title' => $page->title,
+        'default' => 'uk-article-title'
+    ]) ?>
+
     <?= $page->content ?>
+
 </article>

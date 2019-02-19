@@ -1,6 +1,11 @@
 {
     "label": "UIkit Sticky",
     "fields": {
+        "_attr": {
+            "label": "Enable",
+            "type": "checkbox",
+            "default": false
+        },
         "offset": {
             "label": "Offset",
             "help": "Position the element below the viewport edge",
