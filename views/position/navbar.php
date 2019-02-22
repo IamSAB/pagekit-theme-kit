@@ -2,7 +2,7 @@
 
     <?php $view->values()->use($widget->theme) ?>
 
-    <div <?= $view->values()->class('wiget.text', 'uk-navbar-item') ?>>
+    <div <?= $view->values()->class('widget.text', 'uk-navbar-item') ?>>
 
         <?= $widget->get('result') ?>
 

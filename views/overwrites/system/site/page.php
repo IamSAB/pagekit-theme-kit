@@ -6,6 +6,9 @@
         'default' => 'uk-article-title'
     ]) ?>
 
-    <?= $page->content ?>
+    <p>
+
+        <?= $page->content ?>
+    </p>
 
 </article>

@@ -1,7 +1,7 @@
-<div class="uk-cover-container" <?= $view->values()->attr('uk-height-viewport', "$form.ukHeightViewport") ?>>
+<div class="uk-cover-container" uk-height-viewport>
 
     <?php
-        $parts = explode(':', $view->values("$form.cover.ration", '16:9'));
+        $parts = explode(':', $view->values("$form.cover.ratio", '16:9'));
         $canvas = "width=\"$parts[0]\" height=\"$parts[1]\"";
     ?>
     <canvas <?= $canvas ?>></canvas>

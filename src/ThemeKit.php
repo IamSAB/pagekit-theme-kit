@@ -10,7 +10,7 @@ use Pagekit\Util\Arr;
 class ThemeKit extends Module
 {
     private $app;
-    private $fieldsets = null;
+    private $fieldsets = [];
     private $theme = null;
 
     public function main(App $app)
@@ -39,7 +39,9 @@ class ThemeKit extends Module
 
     private function fieldsets()
     {
-        if ($this->fieldsets) return $this->fieldsets;
+        if (!empty($this->fieldsets)) return $this->fieldsets;
+
+        // TODO allow replacing existing fieldsets or better merge them. Directly write fieldsets config inside index.php
 
         foreach (['theme-kit:fieldsets/', 'theme:fieldsets/'] as $path) {
             if ($path = $this->app->locator()->get($path)) {
@@ -146,7 +148,7 @@ class ThemeKit extends Module
             }
         }
 
-        if (!$this->theme) return [];
+        if (empty($this->theme)) return [];
 
         return [
             'view.init' => ['onViewInit', -10],

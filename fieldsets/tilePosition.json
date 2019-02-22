@@ -1,0 +1,35 @@
+{
+    "label": "Tile",
+    "fields": {
+        "style": {
+            "label": "Style",
+            "help": "Add a specific style to cards",
+            "default": "uk-card-default",
+            "type": "select",
+            "options": {
+                "Blank": "",
+                "Default": "uk-card-default",
+                "Muted": "uk-card-muted",
+                "Primary": "uk-card-primary",
+                "Secondary": "uk-card-secondary"
+            }
+        },
+        "padding": {
+            "label": "Padding",
+            "help": "Decrease or increase tile padding.",
+            "default": "",
+            "type": "select",
+            "options": {
+                "Remove": "uk-padding-remove",
+                "Small": "uk-padding-small",
+                "Default": "",
+                "Large": "uk-card-large"
+            }
+        },
+        "image": {
+            "label": "Image",
+            "type": "Image",
+            "default": ""
+        }
+    }
+}

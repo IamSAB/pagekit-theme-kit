@@ -67,37 +67,71 @@ class ValuesHelper extends Helper
         return $this->get($path, $default);
     }
 
+    public function parse(string $expr)
+    {
+        $matches = [];
+
+        if (preg_match('/^([a-zA-Z0-9\.]+)$/', $expr)) {
+            return [$expr, 'all', null];
+        }
+        // $path:$keys
+        else if (preg_match('/^([a-zA-Z0-9\.]+)(:|:!)([a-zA-Z0-9\,]+)$/', $expr, $matches)) {
+            array_shift($matches);
+            return $matches;
+        }
+
+        // $path $prop ? $val_i:$keys_i [...]
+        // checks if $prop in $path is equal $val_i, then takes $key_i
+        else if (preg_match('/([a-zA-Z0-9]+\.[a-zA-Z0-9]+)\s([a-zA-Z0-9]+)\s\?\s(([a-zA-Z0-9]+(:|:!)[a-zA-Z0-9,]+\s?)+)/', $expr, $matches)) {
+            $value = $this->values->get($matches[1].'.'.$matches[2]);
+            foreach(explode(' ', $matches[3]) as $_expr) {
+                $parts = [];
+                if (preg_match('/^([a-zA-Z0-9]+)(:|:!)([a-zA-Z0-9\,]+)$/', $_expr, $parts)) {
+                    switch ($parts[1]) {
+                        case 'true': $a = true; break;
+                        case 'false': $a = false; break;
+                        default: $a = $parts[1]; break;
+                    }
+                    if ($a == $value) {
+                        return [$matches[1], $parts[2], $parts[3]];
+                    }
+                }
+            }
+        }
+
+        return ['','',''];
+    }
+
     public function class($sources, string $class = '', bool $or = false)
     {
         if (!is_array($sources)) $sources = [$sources];
 
-        $paths = [];
-
-        foreach ($sources as $source) {
-            $parts = explode(':', $source);
-            if (isset($parts[1])) {
-                foreach (explode(',', $parts[1]) as $key) {
-                    $paths[] = $parts[0].'.'.$key;
-                }
-            }
-            else {
-                $paths[] = $parts[0];
-            }
-        }
-
         $classes = [];
 
-        foreach ($paths as $path) {
-            $res = $this->values->get($path, []);
-            switch (count(explode('.', $path))) {
-                // form values
-                case 1: $classes = Arr::merge($classes, array_values(Arr::flatten($res))); break;
-                // fieldset values
-                case 2: $classes = Arr::merge($classes, array_values($res)); break;
-                // field value
-                case 3: $classes = Arr::merge($classes, is_array($res) ? $res : [$res]); break;
-                // non-matching path
-                default: break;
+        foreach ($sources as $expr) {
+            $parts = $this->parse($expr);
+            $res = $this->values->get($parts[0], []);
+            switch ($parts[1]) {
+                case 'all':
+                    switch (substr_count($parts[0],'.')) {
+                        case 0:
+                            $classes = Arr::merge($classes, array_values(Arr::flatten($res)));
+                            break;
+                        case 1:
+                            $classes = Arr::merge($classes, array_values($res));
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case ':':
+                    $classes = Arr::merge($classes, array_values(Arr::extract($res, explode(',', $parts[2]))));
+                    break;
+
+                case ':!':
+                    Arr::remove($res, explode(',', $parts[2]));
+                    $classes = Arr::merge($classes, array_values($res));
+                    break;
             }
         }
 
@@ -109,29 +143,32 @@ class ValuesHelper extends Helper
         return $classes ? "class=\"$classes\"" : '';
     }
 
-    public function attr(string $attr, string $path, bool $checkEnable = true, string $value = '')
+    public function attr(string $attr, string $expr, bool $render = true, string $default = '')
     {
-        // TODO allow selecting keys->values for attr
+        $parse = $this->parse($expr);
+        $arr = $this->values->get($parse[0], []);
+        $value = '';
 
-        if (substr_count($path, '.') != 1) return 'invalid-path';
-
-        $arr = $this->values->get($path, []);
-
-        // attribute should only be rendered, if its enabled (needed as most attributes do something without a value)
-        if ($checkEnable) {
-            if (Arr::has($arr, '_enable')) {
-                if (!Arr::get($arr, '_enable', false)) return '';
-                else unset($arr['_enable']);
-            }
-            else return '';
+        switch ($parse[1]) {
+            case ':':
+                $arr = Arr::extract($arr, explode(',', $parse[2]));
+                break;
+            case ':!':
+                Arr::remove($arr, explode(',', $parse[2]));
+                break;
+            default:
+                break;
         }
-
         foreach ($arr as $key => $val) {
             if (is_bool($val)) $val = $val ? 'true' : 'false';
             if ($val) $value .= "$key:$val;";
         }
 
-        return "$attr=\"$value\"";
+        if ($value || $render) {
+            $value = $default.$value;
+            return "$attr=\"$value\"";
+        }
+        else return '';
     }
 
     public function video(string $path)

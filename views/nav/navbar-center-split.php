@@ -6,7 +6,7 @@
     $nodes = $root->getChildren();
     $chunks = array_chunk($nodes, ceil(count($nodes)/2));
     $left = Node::create()->addAll($chunks[0]);
-    $right = Node::create()->addAll($chunks[1]);
+    if (isset($chunks[1])) $right = Node::create()->addAll($chunks[1]);
 ?>
 
 <div class="uk-navbar-center">
@@ -21,10 +21,12 @@
         <?= $content ?>
     </div>
 
+    <?php if (isset($right)): ?>
     <div class="uk-navbar-center-right">
         <div>
             <?= $view->render('theme-kit/nav/navbar.php', ['root' => $right]) ?>
         </div>
     </div>
+    <?php endif ?>
 
 </div>

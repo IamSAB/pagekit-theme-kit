@@ -3,6 +3,7 @@
     "fields": {
         "style": {
             "label": "Style",
+            "help": "Apply a style",
             "type": "select",
             "default": "",
             "options": {
@@ -13,9 +14,31 @@
         },
         "center": {
             "label": "Center",
+            "help": "Center nav items.",
             "type": "choose",
             "default": "",
             "true": "uk-nav-center"
+        },
+        "accordion": {
+            "label": "Accordion",
+            "help": "By default, child menu items are always visible. Check to apply an accordion effect.",
+            "type": "checkbox",
+            "default": false
+        },
+        "parentIcon": {
+            "label": "Show parent icon",
+            "help": "Apply icons, indicating parent items.",
+            "type": "choose",
+            "default": "",
+            "true": "uk-nav-parent-icon",
+            "show": "accordion"
+        },
+        "multiple": {
+            "label": "Multiple",
+            "help": "When clicking on a parent item, an open one will close, allowing only one open nested list at a time. Check to allow multiple open subnav.",
+            "type": "checkbox",
+            "default": false,
+            "show": "accordion"
         }
     }
 }

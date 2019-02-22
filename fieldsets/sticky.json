@@ -1,7 +1,7 @@
 {
-    "label": "UIkit Sticky",
+    "label": "Sticky",
     "fields": {
-        "_attr": {
+        "enable": {
             "label": "Enable",
             "type": "checkbox",
             "default": false
@@ -14,24 +14,35 @@
             "attrs": {
                 "min": "0",
                 "step": "10"
-            }
+            },
+            "show": "enable"
         },
         "top": {
-            "label": "Offset",
+            "label": "Top",
             "help": "Apply the sticky behavior with a delay e.g. in pixels or viewport height",
             "type": "text",
-            "default": "100"
+            "default": "100",
+            "show": "enable"
         },
         "animation": {
             "label": "Animation",
             "type": "text",
-            "default": "uk-animation-slie-top"
+            "default": "",
+            "show": "enable"
         },
         "showOnUp": {
             "label": "Show on up",
             "help": "Make the sticky element show only when scrolling up to.",
             "default": false,
-            "type": "checkbox"
+            "type": "checkbox",
+            "show": "enable"
+        },
+        "media": {
+            "label": "Media",
+            "help": "Condition for the active status - a width as integer (e.g. 640) or a breakpoint (e.g. @s, @m, @l, @xl) or any valid media query (e.g. (min-width: 900px)).",
+            "type": "text",
+            "default": "@m",
+            "show": "enable"
         }
     }
 }

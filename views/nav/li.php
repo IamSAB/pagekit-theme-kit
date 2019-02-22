@@ -4,7 +4,7 @@
 </li>
 <?php endif ?>
 
-<li <?= $node->get('active') ? 'class="uk-active"' : '' ?> <?= $node->hasChildren() ? 'class="uk-parent"' : '' ?>">
+<li class="<?= $node->get('active') ? 'uk-active' : '' ?><?= $node->hasChildren() ? ' uk-parent' : '' ?>">
 
     <a href="<?= $node->getUrl() ?>">
         <?php if ($view->values()->has('general.node.icon')): ?>

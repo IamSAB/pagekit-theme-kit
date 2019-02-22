@@ -1,33 +1,38 @@
 <?php $view->script('posts', 'blog:app/bundle/posts.js', 'vue') ?>
 
 <?php foreach ($posts as $post) : ?>
+
 <article class="uk-article">
+    <?php $link = $view->url('@blog/id', ['id' => $post->id]).'#'.$app->filter($post->title, 'slugify') ?>
+
+<?= '#'.$app->filter($post->title, 'slugify') ?>
 
     <?php if ($image = $post->get('image.src')): ?>
-    <a class="uk-display-block" href="<?= $view->url('@blog/id', ['id' => $post->id]) ?>"><img src="<?= $image ?>" alt="<?= $post->get('image.alt') ?>"></a>
+    <a href="<?= $link ?>">
+        <img  data-src="<?= $view->url($post->get('image.src')) ?>" data-alt="<?= $post->get('image.alt') ?>" uk-img>
+    </a>
     <?php endif ?>
 
-    <h1 class="uk-article-title"><a href="<?= $view->url('@blog/id', ['id' => $post->id]) ?>"><?= $post->title ?></a></h1>
+    <h1 class="uk-article-title"><a class="uk-link-heading" href="<?= $link ?>"><?= $post->title ?></a></h1>
 
     <p class="uk-article-meta">
         <?= __('Written by %name% on %date%', ['%name%' => $this->escape($post->user->name), '%date%' => '<time datetime="'.$post->date->format(\DateTime::ATOM).'" v-cloak>{{ "'.$post->date->format(\DateTime::ATOM).'" | date "longDate" }}</time>' ]) ?>
     </p>
 
-    <div class="uk-margin"><?= $post->excerpt ?: $post->content ?></div>
+    <div><?= $post->excerpt ?: $post->content ?></div>
 
-    <ul class="uk-subnav">
-
+    <p uk-margin>
         <?php if (isset($post->readmore) && $post->readmore || $post->excerpt) : ?>
-        <li><a href="<?= $view->url('@blog/id', ['id' => $post->id]) ?>"><?= __('Read more') ?></a></li>
+        <a class="uk-button uk-button-link" href="<?= $view->url('@blog/id', ['id' => $post->id]) ?>"><?= __('Read more') ?></a>
         <?php endif ?>
 
         <?php if ($post->isCommentable() || $post->comment_count) : ?>
-        <li><a href="<?= $view->url('@blog/id#comments', ['id' => $post->id]) ?>"><?= _c('{0} No comments|{1} %num% Comment|]1,Inf[ %num% Comments', $post->comment_count, ['%num%' => $post->comment_count]) ?></a></li>
+        <a class="uk-button uk-button-link" href="<?= $view->url('@blog/id#comments', ['id' => $post->id]) ?>"><?= _c('{0} No comments|{1} %num% Comment|]1,Inf[ %num% Comments', $post->comment_count, ['%num%' => $post->comment_count]) ?></a>
         <?php endif ?>
-
-    </ul>
+    </p>
 
 </article>
+
 <?php endforeach ?>
 
 <?php

@@ -1,7 +1,7 @@
 <div
-    <?= $view->values()->class("$form.grid") ?>
-    <?= $view->values()->attr('uk-height-viewport', "$form.ukHeightViewport") ?>
-    uk-grid
+    <?= $view->values()->class("$form.grid masonry ? true:masonryChildWidth,gutter false:childWidth,horizontal,vertical,gutter,divider,match") ?>
+    <?= $view->values()->attr('uk-grid', "$form.grid masonry ? true:masonry,parallax false:parallax") ?>
+    <?= $view->values()->attr('uk-height-viewport', "$form.grid viewportHeight ? true:offsetTop,offsetBottom", false) ?>
     >
 
     <?php foreach ($widgets as $widget) : ?>
