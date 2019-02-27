@@ -2,8 +2,16 @@
 
     <?php $view->values()->use($widget->theme) ?>
 
-    <div <?= $view->values()->class(['visibility', 'order', 'alignment']) ?>>
-        <?= $view->render('theme-kit/card.php', ['form' => 'content', 'title' => $widget->title, 'content' => $widget->get('result')]) ?>
+    <div <?= $view->values()->class(['widget.visibility', 'widget.alignment', 'widget.inverse', 'widget.custom.class']) ?> <?= $view->values('widget.custom.tag') ?>>
+        <?= $view->render('theme-kit/card.php', [
+            'form' => 'grid',
+            'heading' => $view->render('theme-kit/heading.php', [
+                'form' => 'widget',
+                'title' => $widget->title,
+                'default' => 'uk-card-title'
+            ]),
+            'content' => $widget->get('result')
+        ]) ?>
     </div>
 
 <?php endforeach ?>

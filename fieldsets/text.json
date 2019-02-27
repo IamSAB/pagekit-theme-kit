@@ -14,19 +14,6 @@
                 "Justify": "uk-text-justify"
             },
             "responsive": ["@s", "@m", "@l", "@xl"]
-        },
-        "vertical": {
-            "label": "Vertical",
-            "help": "Align text vertically. Only has an effect if container has fixed height.",
-            "default": "",
-            "type": "select",
-            "options": {
-                "- Select -": "",
-                "Top": "uk-text-top",
-                "Middle": "uk-text-middle",
-                "Bottom": "uk-text-bottom",
-                "Baseline": "uk-text-baseline"
-            }
         }
     }
 }

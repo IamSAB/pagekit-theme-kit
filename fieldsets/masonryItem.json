@@ -1,0 +1,17 @@
+{
+    "label": "Masonry item",
+    "fields": {
+        "order": {
+            "label": "Item order",
+            "help": "Adapt display order on different devices",
+            "default": "",
+            "type": "select",
+            "options": {
+                "- Select -": "",
+                "First": "uk-flex-first",
+                "Last": "uk-flex-last"
+            },
+            "responsive": ["@s", "@m", "@l", "@xl"]
+        }
+    }
+}

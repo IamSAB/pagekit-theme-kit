@@ -3,10 +3,11 @@
     "fields": {
         "style": {
             "label": "Style",
-            "help": "Add a specific style to cards",
-            "default": "uk-card-default",
+            "help": "Add a specific style to card",
+            "default": "",
             "type": "select",
             "options": {
+                "None": "",
                 "Default": "uk-card-default",
                 "Primary": "uk-card-primary",
                 "Secondary": "uk-card-secondary"
@@ -48,7 +49,28 @@
                 "type": "html",
                 "options": { "height": "250"}
             }
-
+        },
+        "mediaPosition": {
+            "label": "Media Position",
+            "help": "",
+            "default": "uk-card-media-top",
+            "type": "select",
+            "options": {
+                "Small": "uk-card-media-top",
+                "Large": "uk-card-media-bottom"
+            }
+        },
+        "mediaSrc": {
+            "label": "Image",
+            "help": "",
+            "type": "image",
+            "default": ""
+        },
+        "badge": {
+            "label": "Badge",
+            "help": "",
+            "type": "text",
+            "default": ""
         }
     }
 }

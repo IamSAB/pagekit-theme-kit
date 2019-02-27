@@ -8,10 +8,10 @@
             "type": "select",
             "options": {
                 "Blank": "",
-                "Default": "uk-card-default",
-                "Muted": "uk-card-muted",
-                "Primary": "uk-card-primary",
-                "Secondary": "uk-card-secondary"
+                "Default": "uk-tile-default",
+                "Muted": "uk-tile-muted",
+                "Primary": "uk-tile-primary",
+                "Secondary": "uk-tile-secondary"
             }
         },
         "padding": {
@@ -23,12 +23,12 @@
                 "Remove": "uk-padding-remove",
                 "Small": "uk-padding-small",
                 "Default": "",
-                "Large": "uk-card-large"
+                "Large": "uk-padding-large"
             }
         },
         "image": {
             "label": "Image",
-            "type": "Image",
+            "type": "image",
             "default": ""
         }
     }

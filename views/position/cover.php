@@ -2,8 +2,13 @@
 
         <?php $view->values()->use($widget->theme) ?>
 
-        <div <?= $view->values()->class(['cover', 'alignment']) ?>>
-            <?= $view->render('theme-kit/card.php', ['form' => 'content', 'title' => $widget->title, 'content' => $widget->get('result')]) ?>
+        <div <?= $view->values()->class(["$form.position", "$form.overlay", 'widget.text', 'widget.visibility', 'widget.inverse'], 'uk-overlay uk-position-absolute') ?>>
+            <?= $view->render('theme-kit/heading.php', [
+                'form' => 'widget',
+                'title' => $widget->title,
+                'default' => 'uk-card-title'
+            ]) ?>
+            <?= $widget->get('result') ?>
         </div>
 
 <?php endforeach ?>

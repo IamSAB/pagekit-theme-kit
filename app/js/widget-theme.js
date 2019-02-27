@@ -11,6 +11,7 @@ const Theme = {
     created () {
         this.setValues(this.widget.theme);
         this.built = this.build(window.$config);
+        this.selected = ['widget'];
     },
 
     computed: {

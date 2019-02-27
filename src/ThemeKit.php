@@ -112,13 +112,11 @@ class ThemeKit extends Module
 
     public function onSiteEdit($event, $view)
     {
-        $config = $this->load('node-theme', true, ['general' => [
+        $view->data('$config', $this->load('node-theme', true, ['general' => [
             'label' => 'General',
             'categories' => ['Site'],
             'fieldsets' => ['node', 'heading', 'inverse']
-        ]]);
-
-        $view->data('$config', $config);
+        ]]));
 
         $view->script('node-theme', 'theme-kit:app/bundle/node-theme.js', 'site-edit');
     }
@@ -133,9 +131,12 @@ class ThemeKit extends Module
 
     public function onWidgetEdit($event, $view)
     {
-        $view->data('$config', $this->load('widget-theme'));
+        $view->data('$config', $this->load('widget-theme', true, ['widget' => [
+            'label' => 'Widget',
+            'fieldsets' => ['heading', 'text', 'visibility', 'inverse', 'custom']
+        ]]));
 
-        $view->script('widget-theme', 'theme-kit:app/bundle/widget-theme.js', 'widget-edit');
+        $view->script('widget-theme', 'theme-kit:app/bundle/widget-theme.js', ['widget-edit', 'panel-finder' ]);
     }
 
     public function subscribe()

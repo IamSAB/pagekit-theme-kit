@@ -1,5 +1,5 @@
 {
-    "label": "Cover",
+    "label": "Slideshow Item",
     "fields": {
         "type": {
             "label": "Media",
@@ -10,11 +10,6 @@
                 "Video": "video",
                 "iFrame": "iframe"
             }
-        },
-        "ratio": {
-            "label": "Ratio",
-            "type": "text",
-            "default": "16:9"
         },
         "image": {
             "label": "Src",

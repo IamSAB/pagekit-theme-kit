@@ -15,6 +15,7 @@ const Theme = {
     created () {
         this.setValues(this.node.theme);
         this.built = this.build(window.$config);
+        this.categories = ['Position'];
     },
 
     computed: {

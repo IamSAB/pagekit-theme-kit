@@ -67,17 +67,25 @@ class ValuesHelper extends Helper
         return $this->get($path, $default);
     }
 
-    public function parse(string $expr)
+    public function evaluate(string $expr)
     {
         $matches = [];
 
-        if (preg_match('/^([a-zA-Z0-9\.]+)$/', $expr)) {
-            return [$expr, 'all', null];
+        $path = '';
+        $operator = '';
+        $keys = '';
+
+        if (preg_match('/^[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.([a-zA-Z0-9]+)$/', $expr, $matches)) {
+            return [$matches[1] => $this->values->get($expr)];
+        }
+        else if (preg_match('/^([a-zA-Z0-9]+\.[a-zA-Z0-9]+)$/', $expr)) {
+            $path = $expr;
         }
         // $path:$keys
-        else if (preg_match('/^([a-zA-Z0-9\.]+)(:|:!)([a-zA-Z0-9\,]+)$/', $expr, $matches)) {
-            array_shift($matches);
-            return $matches;
+        else if (preg_match('/^([a-zA-Z0-9]+\.[a-zA-Z0-9]+)(:|:!)([a-zA-Z0-9\,]+)$/', $expr, $matches)) {
+            $path = $matches[1];
+            $operator = $matches[2];
+            $keys = $matches[3];
         }
 
         // $path $prop ? $val_i:$keys_i [...]
@@ -93,13 +101,33 @@ class ValuesHelper extends Helper
                         default: $a = $parts[1]; break;
                     }
                     if ($a == $value) {
-                        return [$matches[1], $parts[2], $parts[3]];
+                        $path = $matches[1];
+                        $operator = $parts[2];
+                        $keys = $parts[3];
                     }
                 }
             }
         }
+        else {
+            App::log()->warning("Invalid expression $expr");
+        }
 
-        return ['','',''];
+        $res = $this->values->get($path, []);
+
+        $keys = explode(',', $keys);
+
+        switch ($operator) {
+            case ':':
+                $res = Arr::extract($res, $keys);
+                break;
+            case ':!':
+                Arr::remove($res, $keys);
+                break;
+            default:
+                break;
+        }
+
+        return $res;
     }
 
     public function class($sources, string $class = '', bool $or = false)
@@ -109,30 +137,7 @@ class ValuesHelper extends Helper
         $classes = [];
 
         foreach ($sources as $expr) {
-            $parts = $this->parse($expr);
-            $res = $this->values->get($parts[0], []);
-            switch ($parts[1]) {
-                case 'all':
-                    switch (substr_count($parts[0],'.')) {
-                        case 0:
-                            $classes = Arr::merge($classes, array_values(Arr::flatten($res)));
-                            break;
-                        case 1:
-                            $classes = Arr::merge($classes, array_values($res));
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case ':':
-                    $classes = Arr::merge($classes, array_values(Arr::extract($res, explode(',', $parts[2]))));
-                    break;
-
-                case ':!':
-                    Arr::remove($res, explode(',', $parts[2]));
-                    $classes = Arr::merge($classes, array_values($res));
-                    break;
-            }
+            $classes = Arr::merge($classes, array_values($this->evaluate($expr)));
         }
 
         $classes = implode(' ', $classes);
@@ -145,21 +150,9 @@ class ValuesHelper extends Helper
 
     public function attr(string $attr, string $expr, bool $render = true, string $default = '')
     {
-        $parse = $this->parse($expr);
-        $arr = $this->values->get($parse[0], []);
         $value = '';
 
-        switch ($parse[1]) {
-            case ':':
-                $arr = Arr::extract($arr, explode(',', $parse[2]));
-                break;
-            case ':!':
-                Arr::remove($arr, explode(',', $parse[2]));
-                break;
-            default:
-                break;
-        }
-        foreach ($arr as $key => $val) {
+        foreach ($this->evaluate($expr) as $key => $val) {
             if (is_bool($val)) $val = $val ? 'true' : 'false';
             if ($val) $value .= "$key:$val;";
         }
@@ -201,9 +194,9 @@ class ValuesHelper extends Helper
         return $icon ? "uk-icon=\"icon:$icon;ratio:$ratio\"" : '';
     }
 
-    public function raw($path)
+    public function content(string $content)
     {
-        return json_encode($this->values->get($path));
+        return $this->view->app->content()->applyPlugins($content);
     }
 
     public function getName()

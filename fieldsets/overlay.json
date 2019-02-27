@@ -1,0 +1,15 @@
+{
+    "label": "Overlay",
+    "fields": {
+        "style": {
+            "label": "Style",
+            "type": "select",
+            "default": "",
+            "options": {
+                "None": "",
+                "Default": "uk-overlay-default",
+                "Primary": "uk-overlay-primary"
+            }
+        }
+    }
+}

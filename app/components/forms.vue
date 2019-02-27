@@ -34,16 +34,17 @@
                 <form class="uk-form-horizontal">
                     <h1>{{ form.label }}</h1>
                     <p v-if="form.help">{{ form.help }}</p>
-                    <fieldset v-for="fieldset in form.fieldsets" :key="fieldset.name" style="margin: 15px 0;">
+                    <fieldset v-for="fieldset in form.fieldsets" :key="fieldset.name">
                         <legend>
                             {{ fieldset.label }}
-                            <label v-if="doInherit(fieldset)">
-                                 | <input type="checkbox" v-model="values[form.name][fieldset.name].inherit.enabled">
-                                <small>Inherit from Settings > {{ fieldset.inherit.label }}</small>
-                            </label>
                         </legend>
-                        <p v-if="fieldset.help">{{ fieldset.help }}</p>
-                        <fields v-if="!isInherited(form.name, fieldset.name)" :config="fieldset.fields" :values="values[form.name][fieldset.name]"></fields>
+                        <label class="inherit" v-if="doInherit(fieldset)">
+                            <input class="uk-margin-small-right" type="checkbox" v-model="values[form.name][fieldset.name].inherit.enabled">
+                            {{ 'Inherit' | trans }}
+                        </label>
+                        <span class="uk-margin-small-bottom" v-if="fieldset.help">{{ fieldset.help }}</span>
+                        <span v-if="isInherited(form.name, fieldset.name)"><b>See</b> Settings > {{ fieldset.inherit.label }}</span>
+                        <fields v-else :config="fieldset.fields" :values="values[form.name][fieldset.name]"></fields>
                     </fieldset>
                 </form>
             </div>
@@ -57,6 +58,45 @@
         </div>
 
         <h3 v-else class="uk-h1 uk-text-muted uk-text-center">{{ 'No forms found.' | trans }}</h3>
+
+        <style>
+            .uk-form fieldset {
+                position: relative;
+                border: 3px solid #e5e5e5;
+                margin: initial !important;
+                padding: 20px !important;
+                margin: 20px 0 !important;
+            }
+            .uk-form legend {
+                width: initial !important;
+                border: 3px solid #e5e5e5;
+                padding: 3px 9px !important;
+                line-height: initial !important;
+
+            }
+            .uk-form legend::after {
+                content: initial !important;
+                display: initial !important;
+                border-bottom: initial !important;
+                width: initial !important;
+            }
+            .inherit {
+                position: absolute;
+                right: 20px;
+                top: -35px;
+                padding: 8px 12px !important;
+                background: #e5e5e5;
+            }
+            .uk-form-horizontal .uk-form-label {
+                width: 150px !important;
+            }
+            .uk-form-horizontal .uk-form-controls {
+                margin-left: 165px;
+            }
+            .uk-form-help-inline {
+                display: inline !important;
+            }
+        </style>
 
     </div>
 

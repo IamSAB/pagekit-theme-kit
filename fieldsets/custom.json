@@ -1,0 +1,23 @@
+{
+    "label": "Custom",
+    "fields": {
+        "class": {
+            "label": "Class",
+            "type": "textarea",
+            "default": "",
+            "attrs": {
+                "class": "uk-form-width-large",
+                "rows": 2
+            }
+        },
+        "tag": {
+            "label": "Add to tag",
+            "type": "textarea",
+            "default": "",
+            "attrs": {
+                "class": "uk-form-width-large",
+                "rows": 2
+            }
+        }
+    }
+}

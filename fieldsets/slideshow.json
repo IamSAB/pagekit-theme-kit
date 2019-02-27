@@ -1,0 +1,45 @@
+{
+    "label": "Slideshow",
+    "fields": {
+        "animation": {
+            "label": "Animation",
+            "type": "select",
+            "default": "slide",
+            "options": {
+                "Slide": "slide",
+                "Fade": "fade",
+                "Scale": "scale",
+                "Pull": "pull",
+                "Push": "push"
+            }
+        },
+        "autoplay": {
+            "label": "Autoplay",
+            "type": "checkbox",
+            "default": true
+        },
+        "ratio": {
+            "label": "Ratio",
+            "type": "text",
+            "default": ""
+        },
+        "minHeight": {
+            "label": "Min height",
+            "type": "number",
+            "default": 0,
+            "attrs": {
+                "min": 0,
+                "step": 10
+            }
+        },
+        "maxHeight": {
+            "label": "Max height",
+            "type": "number",
+            "default": 0,
+            "attrs": {
+                "min": 0,
+                "step": 10
+            }
+        }
+    }
+}
