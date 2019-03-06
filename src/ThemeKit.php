@@ -13,6 +13,9 @@ class ThemeKit extends Module
     private $fieldsets = [];
     private $theme = null;
 
+    const INHERIT_PREFIX_NODE = 'n_';
+    const INHERIT_PREFIX_WIDGET = 'w_';
+
     public function main(App $app)
     {
         $this->app = $app;
@@ -37,93 +40,112 @@ class ThemeKit extends Module
         }
     }
 
-    private function fieldsets()
+    private function loadFieldsetsFromDirectory(string $path): void
     {
-        if (!empty($this->fieldsets)) return $this->fieldsets;
-
-        // TODO allow replacing existing fieldsets or better merge them. Directly write fieldsets config inside index.php
-
-        foreach (['theme-kit:fieldsets/', 'theme:fieldsets/'] as $path) {
-            if ($path = $this->app->locator()->get($path)) {
-                $files = $this->app->file()->listDir($path);
-                foreach ($files as $name) {
-                    $parts = explode('.', $name);
-                    if (count($parts) == 2 && $parts[1] == 'json') {
-                        $json = json_decode(file_get_contents($path.$name), true);
-                        if (isset($this->fieldsets[$parts[0]])) {
-                            $this->fieldsets[$parts[0]] = array_merge($json, $this->fieldsets[$parts[0]]);
-                        }
-                        else $this->fieldsets[$parts[0]] = $json;
-                    }
+        if ($path = $this->app->locator()->get($path)) {
+            $matches = [];
+            $files = $this->app->file()->listDir($path);
+            foreach ($files as $name) {
+                if (preg_match('/([A-Za-z]+)\.json/', $name, $matches)) {
+                    $this->fieldsets[$matches[1]] = json_decode(file_get_contents($path.'/'.$matches[0]), true);
                 }
             }
         }
-
-        return $this->fieldsets;
     }
-
-    private function load(string $key, bool $doInherit = true, array $default = [])
+    private function load(string $ui, array $default = []): array
     {
-        $config = $this->theme->get($key, []);
-
-        if ($default) {
-            foreach ($default as $key => $value) {
-                $config[$key] = $value;
-            }
-        }
+        $config = $this->theme->get($ui, []);
 
         // merge fieldsets into config
         foreach ($config as $name => $form) {
             $config[$name]['fieldsets'] = array_intersect_key($this->fieldsets(), array_flip($form['fieldsets']));
         }
 
-        if ($doInherit && $this->theme->get('settings-theme', false)) {
-            // add inherit key to fieldsets
-            foreach($config as $f => $form) {
-                foreach ($form['fieldsets'] as $fs => $fieldset) {
-                    if (in_array($fs, $this->theme->get("settings-theme.$f.fieldsets", []))) {
-                        $config[$f]['fieldsets'][$fs]['inherit'] = [
-                            'label' => $this->theme->get("settings-theme.$f.label").' > '.$this->fieldsets[$fs]['label'],
-                            'path' => "$f.$fs"
-                        ];
-                    }
-                    else if (in_array($fs, $this->theme->get("settings-theme.defaults.fieldsets", []))) {
-                        $config[$f]['fieldsets'][$fs]['inherit'] = [
-                            'label' => $this->theme->get("settings-theme.defaults.label").' > '.$this->fieldsets[$fs]['label'],
-                            'path' => "defaults.$fs"
-                        ];
-                    }
+        return $config;
+    }
+
+    private function loadNodeTheme(): array
+    {
+        $config = $this->theme->get('node-theme', []);
+        $config['general'] = [
+            'label' => 'General',
+            'categories' => ['Site'],
+            'fieldsets' => ['node', 'heading', 'inverse']
+        ];
+        return $this->process($config);
+    }
+
+    private function loadWidgetTheme()
+    {
+        $config = $this->theme->get('widget-theme', []);
+        $config['widget'] = [
+            'label' => 'Widget',
+            'fieldsets' => ['heading', 'text', 'visibility', 'inverse', 'custom'],
+        ];
+        return $this->process($config);
+    }
+
+    private function process(array $forms)
+    {
+        if (empty($this->fieldsets)) {
+            $this->loadFieldsetsFromDirectory('theme-kit:fieldsets');
+            $this->loadFieldsetsFromDirectory('theme:fieldsets');
+        }
+
+        $defaults = $this->theme->get('defaults');
+
+        foreach ($forms as $f => &$form) {
+            $form['fieldsets'] = array_intersect_key($this->fieldsets, array_flip($form['fieldsets']));
+            foreach ($form['fieldsets'] as $fs => &$fieldset) {
+                if (in_array($fs, $defaults)) {
+                    $fieldset['inherit'] = true;
                 }
             }
         }
 
-        return $config;
+        // remove reference
+        unset($form); unset($fieldset);
+
+        return $forms;
     }
 
     public function onViewInit($event, $view)
     {
-        $view->addHelpers([
-            new ValuesHelper($this)
-        ]);
-
-        // $view->map('layout', 'theme-kit/template.php');
+        $view->addHelper(new ValuesHelper);
     }
 
 
     public function onSiteEdit($event, $view)
     {
-        $view->data('$config', $this->load('node-theme', true, ['general' => [
-            'label' => 'General',
-            'categories' => ['Site'],
-            'fieldsets' => ['node', 'heading', 'inverse']
-        ]]));
-
+        $view->data('$config', $this->loadNodeTheme());
         $view->script('node-theme', 'theme-kit:app/bundle/node-theme.js', 'site-edit');
     }
 
     public function onSiteSettings($event, $view)
     {
-        $view->data('$config', $this->load('settings-theme', false));
+        $config = [];
+
+        foreach($this->loadNodeTheme() as $f => $form) {
+            if (Arr::get($form, 'inherit', false)) {
+                unset($form['inherit']);
+                $config[self::INHERIT_PREFIX_NODE.$f] = $form;
+            }
+        }
+
+        foreach($this->loadWidgetTheme() as $f => $form) {
+            if (Arr::get($form, 'inherit', false)) {
+                unset($form['inherit']);
+                $config[self::INHERIT_PREFIX_WIDGET.$f] = $form;
+            }
+        }
+
+        $config['defaults'] = [
+            'label' => 'Defaults',
+            'categories' => ['Fieldsets'],
+            'fieldsets' => array_intersect_key($this->fieldsets, array_flip($this->theme->get('defaults')))
+        ];
+
+        $view->data('$config', $config);
         $view->data('$themeKit', $this->config());
 
         $view->script('settings-theme-kit', 'theme-kit:app/bundle/settings-theme-kit.js', 'site-settings');
@@ -131,11 +153,7 @@ class ThemeKit extends Module
 
     public function onWidgetEdit($event, $view)
     {
-        $view->data('$config', $this->load('widget-theme', true, ['widget' => [
-            'label' => 'Widget',
-            'fieldsets' => ['heading', 'text', 'visibility', 'inverse', 'custom']
-        ]]));
-
+        $view->data('$config', $this->loadWidgetTheme());
         $view->script('widget-theme', 'theme-kit:app/bundle/widget-theme.js', ['widget-edit', 'panel-finder' ]);
     }
 

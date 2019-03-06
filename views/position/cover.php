@@ -1,6 +1,6 @@
 <?php foreach ($widgets as $widget) : ?>
 
-        <?php $view->values()->use($widget->theme) ?>
+        <?php $view->values()->useWidget($widget) ?>
 
         <div <?= $view->values()->class(["$form.position", "$form.overlay", 'widget.text', 'widget.visibility', 'widget.inverse'], 'uk-overlay uk-position-absolute') ?>>
             <?= $view->render('theme-kit/heading.php', [
@@ -13,4 +13,4 @@
 
 <?php endforeach ?>
 
-<?php $view->values()->useParams() ?>
+<?php $view->values()->useNode() ?>

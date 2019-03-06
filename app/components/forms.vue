@@ -34,16 +34,22 @@
                 <form class="uk-form-horizontal">
                     <h1>{{ form.label }}</h1>
                     <p v-if="form.help">{{ form.help }}</p>
-                    <fieldset v-for="fieldset in form.fieldsets" :key="fieldset.name">
+                    <label v-if="form.inherit">
+                        <input class="uk-margin-small-right" type="checkbox" v-model="values[form.name].inherit">
+                        {{ 'Inherit' | trans }}
+                    </label>
+                    <span v-if="form.inherit && values[form.name].inherit"> | <b>See</b> Site > Settings > Themekit / {{ form.label }} </span>
+
+                    <fieldset v-else v-for="fieldset in form.fieldsets" :key="fieldset.name">
                         <legend>
                             {{ fieldset.label }}
                         </legend>
-                        <label class="inherit" v-if="doInherit(fieldset)">
-                            <input class="uk-margin-small-right" type="checkbox" v-model="values[form.name][fieldset.name].inherit.enabled">
+                        <label class="inherit" v-if="fieldset.inherit">
+                            <input class="uk-margin-small-right" type="checkbox" v-model="values[form.name][fieldset.name].inherit">
                             {{ 'Inherit' | trans }}
                         </label>
                         <span class="uk-margin-small-bottom" v-if="fieldset.help">{{ fieldset.help }}</span>
-                        <span v-if="isInherited(form.name, fieldset.name)"><b>See</b> Settings > {{ fieldset.inherit.label }}</span>
+                        <span v-if="fieldset.inherit && values[form.name][fieldset.name].inherit"><b>See</b> Site > Settings > Themekit / Defaults</span>
                         <fields v-else :config="fieldset.fields" :values="values[form.name][fieldset.name]"></fields>
                     </fieldset>
                 </form>
@@ -175,18 +181,18 @@
                 _.each(forms, (form, _form) => {
                     fieldsets = form.fieldsets;
                     form.fieldsets = [];
+                    if (form.inherit && !_.has('values.'+_form+'.inherit')) {
+                        this.$set('values.'+_form+'.inherit', true);
+                    }
                     _.each(fieldsets, (fieldset, _fieldset) => {
                         path = _form+'.'+_fieldset;
-                        if (_.has(fieldset, 'inherit') && !_.has(this.values, path+'.inherit')) {
-                            this.$set('values.'+path, {inherit: {
-                                enabled: true,
-                                path: fieldset.inherit.path
-                            }});
-                            // TODO should it remove inherit key if something in settings change?
-                        }
                         // Pagekit converts empty objects to empty array on serialization, which breaks vue-form.
                         // Necessary to re-set fieldset value if it's empty array
                         if (_.isEmpty(_.get(this.values, path), [])) this.$set('values.'+path, {});
+
+                        if (fieldset.inherit && !_.has('values.'+path+'.inherit')) {
+                            this.$set('values.'+path+'.inherit', true);
+                        }
                         fieldset.name = _fieldset;
                         form.fieldsets.push(fieldset);
                     });
@@ -194,14 +200,6 @@
                     result.push(form);
                 });
                 return result;
-            },
-
-            doInherit(fieldset) {
-                return _.has(fieldset, 'inherit');
-            },
-
-            isInherited(form, fieldset) {
-                return this.$get('values.'+form+'.'+fieldset+'.inherit.enabled', false);
             }
 
         },

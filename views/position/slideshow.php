@@ -2,7 +2,7 @@
     <ul class="uk-slideshow-items">
         <?php foreach ($widgets as $widget) : ?>
         <li>
-            <?php $view->values()->use($widget->theme) ?>
+            <?php $view->values()->useWidget($widget) ?>
 
             <?php switch ($view->values("$form.slideshowItem.type")):
 
@@ -30,7 +30,7 @@
 
         </li>
         <?php endforeach ?>
-        <?php $view->values()->useParams() ?>
+        <?php $view->values()->useNode() ?>
     </ul>
     <div class="uk-light">
         <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>

@@ -16,10 +16,10 @@
     <?php if ($node->hasChildren()) : ?>
         <ul class="uk-nav-sub">
             <?php foreach ($node->getChildren() as $child): ?>
-                <?php $view->values()->use($child->theme) ?>
+                <?php $view->values()->useNode($child) ?>
                 <?= $view->render('theme-kit/nav/sub-li.php', ['node' => $child, 'level' => 0]) ?>
             <?php endforeach ?>
-            <?php $view->values()->useParams() ?>
+            <?php $view->values()->useNode() ?>
         </ul>
     <?php endif ?>
 

@@ -4,10 +4,10 @@
     >
 
     <?php foreach($root->getChildren() as $node) : ?>
-        <?php $view->values()->use($node->theme) ?>
+        <?php $view->values()->useNode($node) ?>
         <?= $view->render('theme-kit/nav/li.php', ['node' => $node]) ?>
     <?php endforeach ?>
 
-    <?php $view->values()->useParams() ?>
+    <?php $view->values()->useNode() ?>
 
 </ul>

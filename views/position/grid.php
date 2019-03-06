@@ -6,7 +6,7 @@
 
     <?php foreach ($widgets as $widget) : ?>
 
-        <?php $view->values()->use($widget->theme) ?>
+        <?php $view->values()->useWidget($widget) ?>
 
         <div <?= $view->values()->class(['grid.gridItem', 'widget.text', 'widget.visibility', 'widget.inverse', 'widget.custom.class']) ?> <?= $view->values('widget.custom.tag') ?>>
             <?= $view->render('theme-kit/card.php', [
@@ -22,6 +22,6 @@
 
     <?php endforeach ?>
 
-    <?php $view->values()->useParams() ?>
+    <?php $view->values()->useNode() ?>
 
 </div>

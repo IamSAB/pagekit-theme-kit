@@ -2,7 +2,7 @@
 
     <?php foreach ($widgets as $widget) : ?>
 
-        <?php $view->values()->use($widget->theme) ?>
+        <?php $view->values()->useWidget($widget) ?>
 
         <div
             <?= $view->values()->class('widget.text', 'widget.visibility', 'widget.inverse', 'widget.custom.class') ?>
@@ -20,6 +20,6 @@
 
     <?php endforeach ?>
 
-    <?php $view->values()->useParams() ?>
+    <?php $view->values()->useNode() ?>
 
 </div>

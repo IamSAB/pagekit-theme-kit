@@ -1,6 +1,6 @@
 <?php foreach ($widgets as $widget) : ?>
 
-    <?php $view->values()->use($widget->theme) ?>
+    <?php $view->values()->useWidget($widget) ?>
 
     <div <?= $view->values()->class('widget.text', 'uk-navbar-item') ?>>
 
@@ -10,4 +10,4 @@
 
 <?php endforeach ?>
 
-<?php $view->values()->useParams() ?>
+<?php $view->values()->useNode() ?>

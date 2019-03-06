@@ -7,49 +7,54 @@ use Pagekit\View\Helper\Helper;
 use Pagekit\Util\Arr;
 use Pagekit\Util\ArrObject;
 use Pagekit\Application as App;
+use Pagekit\Widget\Model\Widget;
+use Pagekit\Site\Model\Node;
 
 
 class ValuesHelper extends Helper
 {
     private $values;
     private $defaults;
-    private $params;
-
-    function __construct(ThemeKit $kit)
-    {
-        $this->defaults = new ArrObject($kit->config());
-    }
+    private $nodeValues;
 
     public function register(View $view)
     {
         $this->view = $view;
-        $this->params = $this->doInherit($view->app->node()->theme);
-        $this->useParams();
+        $this->defaults = $view->app->config('theme-kit');
+        $this->nodeValues = $this->doInherit(ThemeKit::INHERIT_PREFIX_NODE, $view->app->node()->theme);
+        $this->useNode();
     }
 
-    public function doInherit(array $values): ArrObject
+    public function doInherit(string $prefix, array $values): ArrObject
     {
-        foreach ($values as $f => $form) {
-            foreach ($form as $fs => $fieldset) {
-                if (isset($fieldset['inherit'])) {
-                    if ($fieldset['inherit']['enabled']) {
-                        $values[$f][$fs] = $this->defaults->get($fieldset['inherit']['path'], []);
-                    }
-                    else unset($values[$f][$fs]['inherit']);
-                }
+        foreach ($values as $f => &$form) {
+            if (Arr::get($form, 'inherit', false)) $form = $this->defaults->get($prefix.$f, []);
+            else unset($form['inherit']);
+            foreach ($form as $fs => &$fieldset) {
+                if (Arr::get($fieldset, 'inherit', false)) $fieldset = $this->defaults->get("defaults.$fs");
+                else unset($fieldset['inherit']);
             }
         }
+
+        // remove reference
+        unset($form); unset($fieldset);
+
         return new ArrObject($values);
     }
 
-    public function use(array $values)
+    public function useNode(Node $node = null): void
     {
-        $this->values = $this->doInherit($values);
+        if ($node) {
+            $this->values = $this->doInherit(ThemeKit::INHERIT_PREFIX_NODE, $node->theme);
+        }
+        else {
+            $this->values = $this->nodeValues;
+        }
     }
 
-    public function useParams()
+    public function useWidget(Widget $widget): void
     {
-        $this->values = $this->params;
+        $this->values = $this->doInherit(ThemeKit::INHERIT_PREFIX_WIDGET, $widget->theme);
     }
 
     public function has(string $path)

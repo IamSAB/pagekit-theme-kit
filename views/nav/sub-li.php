@@ -10,7 +10,7 @@
     <?php if ($node->hasChildren()) : ?>
     <ul>
         <?php foreach ($node->getChildren() as $child) : ?>
-            <?php $view->values()->use($child->theme) ?>
+            <?php $view->values()->useNode($child) ?>
             <?= $view->render('theme-kit/nav/sub-li.php', ['node' => $child]) ?>
         <?php endforeach ?>
     </ul>

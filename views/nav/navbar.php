@@ -2,7 +2,7 @@
 
     <?php foreach($root->getChildren() as $node) : ?>
 
-        <?php $view->values()->use($node->theme) ?>
+        <?php $view->values()->useNode($node) ?>
 
         <li <?= $node->get('active') ? 'class="uk-active"' : '' ?>>
 
@@ -22,7 +22,7 @@
                 <div class="uk-navbar-dropdown">
                     <ul class="uk-nav uk-navbar-dropdown-nav">
                         <?php foreach($root->getChildren() as $node) : ?>
-                            <?php $view->values()->use($node->theme) ?>
+                            <?php $view->values()->useNode($node) ?>
                             <?= $view->render('theme-kit/nav/li.php', ['node' => $node]) ?>
                         <?php endforeach ?>
                     </ul>
@@ -33,6 +33,6 @@
 
     <?php endforeach ?>
 
-    <?php $view->values()->useParams() ?>
+    <?php $view->values()->useNode() ?>
 
 </ul>
