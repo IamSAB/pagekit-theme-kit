@@ -5,7 +5,7 @@
             <label class="uk-form-label">{{ field.label }}</label>
             <div class="uk-form-controls uk-form-controls-condensed">
                 <component :is="field.type" :field="field"></component>
-                <span v-if="field.help" class="uk-form-help-inline uk-text-muted">{{ field.help }}</span>
+                <div v-if="field.help" class="uk-form-help-block uk-text-muted">{{ field.help }}</div>
                 <div v-if="field.responsive" class="uk-flex uk-flex-wrap">
                     <span class="uk-margin-right uk-margin-small-top" v-for="viewport in field.responsive" :key="viewport">
                         {{ viewport }}
@@ -14,6 +14,12 @@
                 </div>
             </div>
         </div>
+        <style>
+            .uk-form-width-large {
+                max-width: 400px;
+                width: 100% !important;
+            }
+        </style>
     </div>
 
 </template>

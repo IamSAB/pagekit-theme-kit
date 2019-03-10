@@ -21,22 +21,30 @@ class ValuesHelper extends Helper
     {
         $this->view = $view;
         $this->defaults = $view->app->config('theme-kit');
-        $this->nodeValues = $this->doInherit(ThemeKit::INHERIT_PREFIX_NODE, $view->app->node()->theme);
+        $this->nodeValues = $this->doInherit('node', $view->app->node()->theme);
         $this->useNode();
     }
 
     public function doInherit(string $prefix, array $values): ArrObject
     {
+        // inherit forms
         foreach ($values as $f => &$form) {
-            if (Arr::get($form, 'inherit', false)) $form = $this->defaults->get($prefix.$f, []);
-            else unset($form['inherit']);
-            foreach ($form as $fs => &$fieldset) {
-                if (Arr::get($fieldset, 'inherit', false)) $fieldset = $this->defaults->get("defaults.$fs");
-                else unset($fieldset['inherit']);
+            if ($f == 'main') App::log()->debug(json_encode($form));
+            if (Arr::get($form, 'inherit', true)) {
+                $form = $this->defaults->get("$prefix.$f", []);
+            } else {
+                unset($form['inherit']);
             }
+            if ($f == 'main') App::log()->debug(json_encode($form));
+            foreach ($form as $fs => &$fieldset) {
+                if (Arr::get($fieldset, 'inherit', true)) {
+                    $fieldset = $this->defaults->get("fieldsets.defaults.$fs", []);
+                } else {
+                    unset($fieldset['inherit']);
+                }
+            }
+            if ($f == 'main') App::log()->debug(json_encode($form));
         }
-
-        // remove reference
         unset($form); unset($fieldset);
 
         return new ArrObject($values);
@@ -45,7 +53,7 @@ class ValuesHelper extends Helper
     public function useNode(Node $node = null): void
     {
         if ($node) {
-            $this->values = $this->doInherit(ThemeKit::INHERIT_PREFIX_NODE, $node->theme);
+            $this->values = $this->doInherit('node', $node->theme);
         }
         else {
             $this->values = $this->nodeValues;
@@ -54,7 +62,7 @@ class ValuesHelper extends Helper
 
     public function useWidget(Widget $widget): void
     {
-        $this->values = $this->doInherit(ThemeKit::INHERIT_PREFIX_WIDGET, $widget->theme);
+        $this->values = $this->doInherit('widget', $widget->theme);
     }
 
     public function has(string $path)

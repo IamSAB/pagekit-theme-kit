@@ -2,65 +2,73 @@
 
     <div>
 
-        <div v-if="forms.length">
+        <div v-if="forms.length" :id="$options.name+'-top'">
 
             <partial name="toolbar"></partial>
 
-            <div class="uk-margin-top uk-margin-small-bottom" v-if="forms.length > 1">
-                <div class="uk-search">
-                    <input class="uk-search-field uk-form-width-large" type="text" v-model="search" debounce="300">
-                </div>
-            </div>
-
-            <nav class="uk-subnav uk-subnav-pill" v-if="categoryNav.length">
+            <nav class="uk-subnav uk-subnav-pill uk-margin" v-if="categoriesNav.length">
                 <li class="uk-disabled">
                     <a>Categories</a>
                 </li>
-                <li v-for="item in categoryNav" :class="isActive('categories', item) ? 'uk-active' : ''" :key="item">
-                    <a @click="click('categories', item)">{{ item }}</a>
+                <li v-for="item in categoriesNav" :class="item == category ? 'uk-active' : ''" :key="item">
+                    <a @click="category = item">{{ item }}</a>
                 </li>
             </nav>
 
-            <nav class="uk-subnav uk-subnav-pill uk-margin-bottom uk-margin-small-top">
+            <nav class="uk-subnav uk-subnav-pill uk-margin" v-if="formsNav.length">
                 <li class="uk-disabled">
-                    <a>Selected</a>
+                    <a>Forms</a>
                 </li>
-                <li v-for="item in selectNav" :class="isActive('selected', item.name) ? 'uk-active' : ''" :key="item.name">
-                    <a @click="click('selected', item.name)">{{ item.label }}</a>
+                <li v-for="item in formsNav" :class="item.name == selected ? 'uk-active' : ''" :key="item.name">
+                    <a @click="selected = item.name">{{ item.label }}</a>
                 </li>
             </nav>
 
-            <div class="uk-panel uk-panel-divider" v-for="form in active" :key="form.name">
-                <form class="uk-form-horizontal">
-                    <h1>{{ form.label }}</h1>
-                    <p v-if="form.help">{{ form.help }}</p>
-                    <label v-if="form.inherit">
-                        <input class="uk-margin-small-right" type="checkbox" v-model="values[form.name].inherit">
-                        {{ 'Inherit' | trans }}
-                    </label>
-                    <span v-if="form.inherit && values[form.name].inherit"> | <b>See</b> Site > Settings > Themekit / {{ form.label }} </span>
+        </div>
 
-                    <fieldset v-else v-for="fieldset in form.fieldsets" :key="fieldset.name">
-                        <legend>
-                            {{ fieldset.label }}
-                        </legend>
-                        <label class="inherit" v-if="fieldset.inherit">
-                            <input class="uk-margin-small-right" type="checkbox" v-model="values[form.name][fieldset.name].inherit">
-                            {{ 'Inherit' | trans }}
-                        </label>
-                        <span class="uk-margin-small-bottom" v-if="fieldset.help">{{ fieldset.help }}</span>
-                        <span v-if="fieldset.inherit && values[form.name][fieldset.name].inherit"><b>See</b> Site > Settings > Themekit / Defaults</span>
-                        <fields v-else :config="fieldset.fields" :values="values[form.name][fieldset.name]"></fields>
-                    </fieldset>
-                </form>
+        <div v-if="forms.length" class="uk-margin-large">
+
+            <h3 v-if="!active" class="uk-h1 uk-text-muted uk-text-center">{{ 'Please select a form.' | trans }}</h3>
+
+            <div v-else>
+                <h1 id="theme-form">{{ active.label }}</h1>
+                <p v-if="active.help">{{ active.help }}</p>
+                <label v-if="active.inherit">
+                    <input class="uk-margin-small-right" type="checkbox" v-model="values[active.name].inherit">
+                    {{ 'Inherit' | trans }}
+                </label>
+                <span v-if="values[active.name].inherit"> | <b>See</b> Site > Settings </span>
+                <div v-else class="uk-grid uk-margin-top">
+                    <div class="uk-width-8-10 uk-width-medium-9-10">
+                        <div class="uk-form-horizontal">
+                            <fieldset :id="$options.name + fieldset.name" v-for="fieldset in active.fieldsets | orderBy 'label'" :key="fieldset.name">
+                                <legend>
+                                    {{ fieldset.label }}
+                                </legend>
+                                <label class="inherit" v-if="fieldset.inherit">
+                                    <input class="uk-margin-small-right" type="checkbox" v-model="values[active.name][fieldset.name].inherit">
+                                    {{ 'Inherit' | trans }}
+                                </label>
+                                <span class="uk-margin-small-bottom" v-if="fieldset.help">{{ fieldset.help }}</span>
+                                <span v-if="fieldset.inherit && values[active.name][fieldset.name].inherit"><b>See</b> Site > Settings > Fieldsets</span>
+                                <fields v-else :config="fieldset.fields" :values="values[active.name][fieldset.name]"></fields>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="uk-width-2-10 uk-width-medium-1-10" v-if="fieldsetsNav.length">
+                        <div data-uk-sticky="{top: 20, boundary: true}">
+                            <nav class="uk-nav uk-nav-side uk-text-center" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                                <li>
+                                    <a :href="'#'+$options.name+'-top'"><i class="uk-icon-chevron-circle-up"></i></a>
+                                </li>
+                                <li v-for="item in fieldsetsNav">
+                                    <a :href="'#'+item.id">{{ item.label }}</a>
+                                </li>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <h3 v-if="!active.length" class="uk-h1 uk-text-muted uk-text-center">{{ 'Please select a form.' | trans }}</h3>
-
-            <pre>
-                {{ values | json }}
-            </pre>
-
         </div>
 
         <h3 v-else class="uk-h1 uk-text-muted uk-text-center">{{ 'No forms found.' | trans }}</h3>
@@ -69,7 +77,6 @@
             .uk-form fieldset {
                 position: relative;
                 border: 3px solid #e5e5e5;
-                margin: initial !important;
                 padding: 20px !important;
                 margin: 20px 0 !important;
             }
@@ -93,14 +100,9 @@
                 padding: 8px 12px !important;
                 background: #e5e5e5;
             }
-            .uk-form-horizontal .uk-form-label {
-                width: 150px !important;
-            }
-            .uk-form-horizontal .uk-form-controls {
-                margin-left: 165px;
-            }
             .uk-form-help-inline {
                 display: inline !important;
+                word-wrap: break-word;
             }
         </style>
 
@@ -117,10 +119,8 @@
         data: () => ({
             test: '',
             values: {},
-            categories: [],
-            selected: [],
-            search: '',
-            clicks: 0
+            category: '',
+            selected: ''
         }),
 
         watch: {
@@ -130,47 +130,20 @@
                 },
                 deep: true
             },
-            categories (arr, old) {
-                this.$session.set(this.$options.name + '.categories', arr);
+            category (value, old) {
+                this.$session.set(this.$options.name + '.category', value);
             },
-            selected (arr, old) {
-                this.$session.set(this.$options.name + '.selected', arr);
+            selected (value, old) {
+                this.$session.set(this.$options.name + '.selected', value);
             }
         },
 
-        compiled () {
-            this.categories = this.$session.get(this.$options.name + '.categories', []);
-            this.selected = this.$session.get(this.$options.name + '.selected', []);
+        ready () {
+            this.category = this.$session.get(this.$options.name + '.category', '');
+            this.selected = this.$session.get(this.$options.name + '.selected', '');
         },
 
         methods: {
-
-            isActive (prop, value) {
-                return _.includes(this[prop], value);
-            },
-
-            // TODO enhance double click behaviour
-            click (prop, value) {
-                this.clicks++;
-                if (this.clicks == 1) {
-                    this.toggle(prop,value);
-                    setTimeout(() => {
-                        if (this.clicks == 1) {
-                            this[prop] = [value];
-                        }
-                        this.clicks = 0;
-                    }, 250);
-                }
-            },
-
-            toggle (prop, value) {
-                if (_.includes(this[prop], value)) {
-                    this[prop] = _.without(this[prop], value);
-                }
-                else {
-                    this[prop].push(value);
-                }
-            },
 
             setValues (values) {
                 if (!_.isEmpty(values)) this.values = values;
@@ -181,17 +154,16 @@
                 _.each(forms, (form, _form) => {
                     fieldsets = form.fieldsets;
                     form.fieldsets = [];
-                    if (form.inherit && !_.has('values.'+_form+'.inherit')) {
+                    if (form.inherit && !_.has(this.values, _form+'.inherit')) {
                         this.$set('values.'+_form+'.inherit', true);
                     }
                     _.each(fieldsets, (fieldset, _fieldset) => {
                         path = _form+'.'+_fieldset;
                         // Pagekit converts empty objects to empty array on serialization, which breaks vue-form.
                         // Necessary to re-set fieldset value if it's empty array
-                        if (_.isEmpty(_.get(this.values, path), [])) this.$set('values.'+path, {});
-
-                        if (fieldset.inherit && !_.has('values.'+path+'.inherit')) {
-                            this.$set('values.'+path+'.inherit', true);
+                        if (_.isEmpty(_.get(this.values, _form+'.'+_fieldset), [])) this.$set('values.'+_form+'.'+_fieldset, {});
+                        if (fieldset.inherit && !_.has(this.values, _form+'.'+_fieldset+'.inherit')) {
+                            this.$set('values.'+_form+'.'+_fieldset+'.inherit', true);
                         }
                         fieldset.name = _fieldset;
                         form.fieldsets.push(fieldset);
@@ -210,7 +182,11 @@
                 return [];
             },
 
-            categoryNav () {
+            active () {
+                return this.selected ? _.find(this.forms, {name: this.selected}) : null;
+            },
+
+            categoriesNav () {
                 let categories = [];
                 _.each(this.forms, (form) => {
                     if (_.has(form, 'categories')) {
@@ -220,47 +196,46 @@
                 return categories;
             },
 
-            selectNav () {
+            formsNav () {
                 let nav = [];
-                _.each(this.filteredByCategories, (form) => {
-                    nav.push({
-                        label: form.label,
-                        name: form.name
-                    });
+                _.each(this.forms, (form) => {
+                    if (this.categoriesNav.length && _.has(form, 'categories')) {
+                        if (_.includes(form.categories, this.category)) {
+                            nav.push({
+                                label: form.label,
+                                name: form.name
+                            });
+                        }
+                    }
+                    else {
+                        nav.push({
+                            label: form.label,
+                            name: form.name
+                        });
+                    }
                 });
                 return nav;
             },
 
-            filteredByCategories () {
-                if (!this.categoryNav.length) return this.forms;
-                let int;
-                // forms filtered by categories
-                return _.filter(this.forms, (form) => {
-                    int = _.intersection(form.categories, this.categories);
-                    return int.length;
-                });
-            },
-
-            active () {
-                // filter forms by search, otherwise via categories and selected
-                if (this.search) {
-                    let n = 0, searches = ['label', 'name', 'help'];
-                    return _.filter(this.forms, (form) => {
-                        n = 0;
-                        _.each(searches, (prop) => {
-                            if (_.has(form, prop)) {
-                                if (form[prop].search(this.search) >= 0) n++;
-                            }
+            fieldsetsNav () {
+                let nav = [];
+                if (this.active && this.selected) {
+                    _.each(this.active.fieldsets, (fieldset) => {
+                        nav.push({
+                            letter: fieldset.label.substring(0,1),
+                            id: this.$options.name + fieldset.name,
+                            label: ''
                         });
-                        return n;
                     });
+                    nav = _.sortBy(nav, 'letter');
+                    let before = '';
+                    _.each(nav, (item) => {
+                        if (before == item.letter) item.label = '<>';
+                        else item.label = item.letter
+                        before = item.letter;
+                    })
                 }
-                else  {
-                    // selected filter on top of categories filter
-                    return _.filter(this.filteredByCategories, (form) => {
-                        return _.includes(this.selected, form.name);
-                    });
-                }
+                return nav;
             }
 
         },

@@ -3,14 +3,14 @@ import Forms from "../components/forms.vue";
 const Theme = {
 
     section: {
-        label: 'Theme Kit',
+        label: 'Fieldsets',
         icon: 'pk-icon-large-brush',
         priority: 16
     },
 
     created () {
-        this.setValues(window.$themeKit);
-        this.built = this.build(window.$config);
+        this.setValues(window.$themeKit.fieldsets);
+        this.built = this.build(window.$configFieldsets);
     },
 
     extends: Forms,
@@ -26,7 +26,7 @@ const Theme = {
         save () {
             this.$http.post('admin/system/settings/config', {
                 name: 'theme-kit',
-                config: this.values
+                config: {fieldsets: this.values}
             }).catch((res) => {
                 this.$notify(res.data, 'danger');
             });
@@ -47,6 +47,6 @@ const Theme = {
 
 };
 
-window.Site.components['settings-theme-kit'] = Theme;
+window.Site.components['settings-theme-fieldset'] = Theme;
 
 export default Theme;

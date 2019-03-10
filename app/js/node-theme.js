@@ -13,8 +13,12 @@ const Theme = {
     },
 
     created () {
+        console.log(JSON.parse(JSON.stringify(this.node.theme)));
         this.setValues(this.node.theme);
+        console.log(JSON.parse(JSON.stringify(this.values)));
+
         this.built = this.build(window.$config);
+        console.log(JSON.parse(JSON.stringify(this.node.theme)));
         this.categories = ['Position'];
     },
 

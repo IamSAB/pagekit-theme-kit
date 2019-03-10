@@ -12,4 +12,10 @@ return [
     ],
 
     'main' => 'SAB\\ThemeKit\\ThemeKit',
+
+    'config' => [
+        'widget' => [],
+        'node' => [],
+        'fieldsets' => []
+    ]
 ];
